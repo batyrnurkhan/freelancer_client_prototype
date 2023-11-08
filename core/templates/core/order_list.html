@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+  <h2>Order List</h2>
+  <ul>
+    {% for order in orders %}
+      <li><a href="{% url 'listings:order_detail' slug=order.slug %}">{{ order.title }}</a>
+</li>
+    {% endfor %}
+  </ul>
+{% if user.is_authenticated and user.user_type == 'client' %}
+  <div class="create-order-button">
+    <a href="{% url 'listings:order_create' %}" class="btn btn-primary">Create Order</a>
+  </div>
+{% endif %}
+
+{% endblock %}

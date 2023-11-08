@@ -1,0 +1,114 @@
+/* freelancer_detail.css */
+.profile-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.profile-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: block;
+}
+
+.profile-details {
+  text-align: center;
+}
+
+.profile-name {
+  color: #333;
+  font-size: 24px;
+  margin: 10px 0;
+}
+
+.profile-email {
+  margin-bottom: 10px;
+}
+
+.profile-portfolio {
+  margin-bottom: 10px;
+}
+
+.profile-skills ul.skills-list {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+}
+
+.profile-skills ul.skills-list li {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px 10px;
+  background: #e1e1e1;
+  border-radius: 20px;
+}
+
+.reviews {
+  background-color: #f8f9fa;
+  border-left: 4px solid #5e9cae;
+  padding: 10px;
+  margin-top: 10px;
+  white-space: pre-line;
+}
+
+.edit-profile-btn {
+  background-color: #5e9cae;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 4px;
+  border: none;
+  display: inline-block;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.edit-profile-btn:hover {
+  background-color: #4a7c8e;
+}
+
+.start-chat-btn {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.start-chat-btn:hover {
+  background-color: #45a049;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+  .profile-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .profile-name {
+    font-size: 20px;
+  }
+}

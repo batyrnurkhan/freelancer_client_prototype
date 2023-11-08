@@ -1,0 +1,51 @@
+  {% extends 'core/base.html' %}
+  {% load static%}
+{% block page_specific_css %}
+<link rel="stylesheet" href="{% static 'css/freelancers_list.css' %}" />
+{% endblock %}
+
+  {% block content %}
+    <div class="freelancers-container">
+      <h2>Freelancers</h2>
+
+      <div class="search-container">
+        <form method="get" action="{% url 'accounts:freelancer-list' %}" class="search-form">
+          <input type="text" name="search" placeholder="Search by username or email" value="{{ request.GET.search }}" aria-label="Search freelancers">
+          <select id="skillSelect" name="skill" multiple="multiple" class="skill-multi-select">
+            {% for skill in skills %}
+              <option value="{{ skill.name }}" {% if skill.name in selected_skills %}selected{% endif %}>
+                {{ skill.name }}
+              </option>
+            {% endfor %}
+          </select>
+          <button type="submit">Search</button>
+        </form>
+      </div>
+
+      <ul class="freelancer-list-ul">
+        {% for user in freelancers %}
+        <li class="freelancer-list-item">
+          <a href="{% url 'accounts:freelancer_detail' pk=user.freelancer_profile.pk %}" class="freelancer-link">
+            <div class="freelancer-info">
+              <img class="profile-image" src="{{ freelancer.profile_image.url }}" alt="Freelancer Profile Image">
+            <strong>{{ user.username }} </strong>
+            <div>{{ user.email }}</div>
+            <div>Skills: {{ user.freelancer_profile.skills.all|join:", " }}</div>
+          </div>
+        </a>
+      </li>
+  {% endfor %}
+      </ul>
+    </div>
+
+    {% block extra_js %}
+    <script>
+      $(document).ready(function() {
+          $('#skillSelect').select2({
+              placeholder: "Select skills",
+              allowClear: true
+          });
+      });
+    </script>
+    {% endblock %}
+  {% endblock %}

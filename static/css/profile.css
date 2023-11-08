@@ -1,0 +1,129 @@
+.profile-container {
+    max-width: 90%; /* Adjust this to your preference for max width */
+    margin: 20px auto; /* Top and bottom margin 20px, auto margin on left and right centers the container */
+    display: flex;
+    flex-direction: column; /* Stack the items vertically */
+    align-items: center; /* Center items horizontally */
+}
+
+.profile-card {
+    width: 100%; /* Make the card take the full width of the container */
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Optional shadow for depth */
+    margin-bottom: 20px; /* Adds space below the card */
+}
+
+
+.profile-image-container {
+    flex-shrink: 0; /* prevents the image container from shrinking */
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ddd;
+}
+
+.profile-details {
+    background: #f7f7f7;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.profile-name {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.profile-email, .profile-type, .profile-portfolio, .profile-company {
+    background: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.skills-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skills-list li {
+    background: #e1e1e1;
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+
+.edit-profile-btn {
+    background-color: #5e9cae;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    display: inline-block; /* Allows the button to align with text */
+    margin-top: 20px; /* Adds space above the button */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.edit-profile-btn:hover {
+    background-color: #4a7c8e; /* Darker shade on hover */
+}
+
+.profile-error {
+    color: #d9534f; /* Bootstrap's btn-danger color for error messages */
+}
+
+/* Additional styles for visual hierarchy and spacing */
+.profile-header {
+    margin-bottom: 30px; /* Adds space below the header section */
+}
+
+.profile-details {
+    margin-bottom: 30px; /* Adds space below the details section */
+}
+
+.profile-skills {
+    margin-top: 20px; /* Adds space above the skills list */
+}
+
+.reviews {
+  background-color: #f8f9fa;
+  border-left: 4px solid #5e9cae;
+  padding: 10px;
+  margin-top: 10px;
+  white-space: pre-line; /* Ensures that line breaks are respected */
+}
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+    .profile-container {
+        max-width: 100%; /* Full width on smaller screens */
+        padding: 0 10px; /* Optional padding to ensure some space on the sides */
+    }
+
+    .profile-card {
+        padding: 10px; /* Reduced padding on smaller screens */
+    }
+
+    .profile-details {
+        padding: 15px; /* Reduced padding on smaller screens */
+    }
+
+    .skills-list {
+        justify-content: center; /* Center skills on smaller screens */
+    }
+
+    .edit-profile-btn {
+        width: 100%; /* Full width button on smaller screens */
+        text-align: center; /* Center the text inside the button */
+    }
+}

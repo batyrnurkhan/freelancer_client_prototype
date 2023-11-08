@@ -1,0 +1,122 @@
+/* Container for freelancers */
+.freelancers-container {
+  margin: auto;
+  max-width: 1200px;
+  padding: 20px;
+}
+
+/* Search container */
+.search-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+/* Search form layout */
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Input and Select styles */
+.search-form input[type="text"],
+.search-form select {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex-grow: 1;
+  padding: 10px;
+}
+
+/* Select width adjustment */
+.search-form select {
+  width: auto; /* Adjust width of select to content */
+}
+
+/* Button styles */
+.search-form button {
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: background-color 0.3s;
+}
+
+/* Button hover effect */
+.search-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Freelancer cards styling */
+.freelancer-list-ul {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Individual freelancer card */
+.freelancer-list-item {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Card hover effect */
+.freelancer-list-item:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+/* Freelancer text and links */
+.freelancer-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Freelancer info */
+.freelancer-info {
+  text-align: center;
+}
+
+/* Freelancer info emphasis */
+.freelancer-info strong {
+  color: #333;
+  display: block;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Info division */
+.freelancer-info > div {
+  margin-bottom: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .freelancer-list-ul {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .search-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .search-form input[type="text"],
+  .search-form select,
+  .search-form button {
+    width: calc(100% - 20px); /* Subtract padding */
+  }
+}

@@ -1,0 +1,241 @@
+/* Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #4A4A4A;
+    background-color: #F5F5F5;
+}
+
+.wrapper {
+    max-width: 1200px; /* Max width to contain the wrapper */
+    width: 100%; /* Full width */
+    margin: auto; /* Centering the wrapper */
+    padding: 0 20px; /* Padding only on the sides */
+}
+
+/* Header Styles */
+.site-header {
+    background: #FFFFFF;
+    padding: 5px 0; /* Further reduced padding */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex; /* Ensures flex layout for the header */
+    align-items: center; /* Aligns items vertically in the center */
+    justify-content: space-between; /* Distributes space between and around content items */
+}
+
+.logo {
+    flex: 1; /* Allows the logo to grow and take up space */
+    display: flex;
+    align-items: center; /* Aligns the logo image vertically */
+    justify-content: flex-start; /* Aligns the logo image to the left */
+}
+
+.logo img.navbar-logo {
+    height: 30px; /* Adjust height as needed */
+    width: auto; /* Keeps the image aspect ratio intact */
+}
+
+.logo h1 {
+    font-size: 20px; /* Optional: Reduce size if needed */
+    margin-bottom: 0;
+    color: #333333;
+    display: none; /* Hide text logo when image is present */
+}
+
+.main-nav {
+    flex: 2; /* Allows the navigation to grow and take up more space */
+    display: flex;
+    justify-content: flex-end; /* Aligns the nav items to the right */
+}
+
+.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.main-nav li {
+    margin-left: 10px; /* Adjust spacing between nav items */
+}
+
+.nav-button {
+    background: none;
+    border: 0;
+    font-size: 14px; /* Adjust font size as needed */
+    padding: 5px 10px; /* Adjust padding as needed */
+    color: #333333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.nav-button:hover, .nav-button:focus {
+    color: #5E9CAE;
+}
+
+
+/* Hero Styles */
+.hero {
+    text-align: center;
+    padding: 60px 20px;
+    background: #E8F4F2;
+    margin-bottom: 40px;
+}
+
+.hero h2 {
+    font-size: 30px;
+    color: #333333;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #666666;
+    margin-bottom: 25px;
+}
+
+.hero-button {
+    display: inline-block;
+    font-size: 18px;
+    color: #fff;
+    background: #5E9CAE;
+    padding: 10px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.hero-button:hover {
+    background: #4A7C8E;
+}
+
+/* Features Styles */
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 40px 20px;
+}
+
+.feature {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.feature h3 {
+    margin-bottom: 15px;
+    color: #5E9CAE;
+}
+
+.feature p {
+    margin-bottom: 20px;
+    color: #666666;
+}
+
+.feature-button {
+    display: inline-block;
+    font-size: 16px;
+    color: #fff;
+    background: #7FB3B5;
+    padding: 10px 25px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.feature-button:hover {
+    background: #699A9B;
+}
+
+/* Footer Styles */
+.site-footer {
+    background: #E8F4F2;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.dropbtn {
+    cursor: pointer;
+}
+
+/* Dropdown Content (Hidden by default) */
+.dropdown {
+    position: relative; /* This ensures the dropdown content positions itself relative to this container */
+    display: inline-block; /* For inline alignment with other nav items */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    top: 100%; /* Positions the dropdown right under the button */
+    left: 0; /* Align to the left edge of the parent '.dropdown' */
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .wrapper {
+        padding: 0 10px; /* Reduced padding on smaller screens */
+    }
+
+    .dropdown-content {
+        width: 100%; /* Full width on smaller screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .site-header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .logo, .main-nav {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .main-nav ul {
+        flex-direction: column;
+    }
+
+    .main-nav li {
+        margin: 5px 0;
+    }
+
+    .dropdown-content {
+        right: 0; /* Full width on mobile */
+        left: 0;
+        width: 100%; /* Make dropdown full width */
+    }
+}

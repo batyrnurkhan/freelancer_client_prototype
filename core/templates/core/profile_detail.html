@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+{% load static%}
+{% block page_specific_css %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+{% endblock page_specific_css %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-card">
+        <div class="profile-header">
+            {% if user.freelancer_profile.profile_image %}
+                <img class="profile-image" src="{{ user.freelancer_profile.profile_image.url }}" alt="Freelancer Profile Image">
+            {% elif user.client_profile.profile_image %}
+                <img class="profile-image" src="{{ user.client_profile.profile_image.url }}" alt="Client Profile Image">
+            {% else %}
+                <img class="profile-image" src="{% static 'img/image.png' %}" alt="Default Profile Image">
+            {% endif %}
+        </div>
+<div class="profile-details">
+    <h1 class="profile-name">{{ user.get_full_name|default:user.username }}</h1>
+    <p class="profile-email"><strong>Email:</strong> {{ user.email }}</p>
+    <p class="profile-type"><strong>User Type:</strong> {{ user.get_user_type_display }}</p>
+    {% if user.user_type == "freelancer" and user.freelancer_profile %}
+        <p class="profile-portfolio"><strong>Portfolio:</strong> <a href="{{ user.freelancer_profile.portfolio }}">{{ user.freelancer_profile.portfolio }}</a></p>
+        <div class="profile-skills">
+            <strong>Skills:</strong>
+            <ul class="skills-list">
+                {% for skill in user.freelancer_profile.skills.all %}
+                    <li>{{ skill.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    <p><strong>Average Rating:</strong> {{ user.freelancer_profile.average_rating }}</p>
+    <p><strong>Reviews:</strong></p>
+    {% if user.freelancer_profile.reviews %}
+    <div class="reviews">{{ user.freelancer_profile.reviews }}</div>
+    {% else %}
+    <div class="reviews">No reviews yet.</div>
+    {% endif %}
+
+    {% elif user.user_type == "client" and user.client_profile %}
+        <p class="profile-company"><strong>Company Name:</strong> {{ user.client_profile.company_name }}</p>
+    {% else %}
+        <p class="profile-error">User type not specified or profile not found.</p>
+    {% endif %}
+    <a href="{% url 'accounts:edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
+</div>
+</div>
+{% endblock %}

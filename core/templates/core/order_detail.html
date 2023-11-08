@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+  <h2>{{ order.title }}</h2>
+  <p><strong>Client:</strong> {{ order.client.email }}</p>
+  <p><strong>Description:</strong> {{ order.description }}</p>
+  <p><strong>Technology Stack:</strong> {{ order.technology_stack }}</p>
+  <p><strong>Price:</strong> {{ order.price }}</p>
+  <p><strong>Created At:</strong> {{ order.created_at }}</p>
+  <!-- Add more fields as needed -->
+{% endblock %}
