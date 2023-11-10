@@ -15,7 +15,7 @@ class ChatDetailView(LoginRequiredMixin, View):
         chat = get_object_or_404(Chat, id=chat_id)
         # Ensure the user is a participant in the chat
         if request.user not in chat.participants.all():
-            return redirect('chat_list')
+            return redirect('chat:chat_list')
         messages = chat.messages.all()
         return render(request, 'core/chat_detail.html', {'chat': chat, 'messages': messages})
 
@@ -76,14 +76,15 @@ def chat_detail(request, chat_id):
     messages = chat.messages.all()  # Make sure 'messages' is a related_name in your Message model
     return render(request, 'core/chat_detail.html', {'chat': chat, 'messages': messages})
 
+
+from django.db.models import Count
 class StartChatView(LoginRequiredMixin, View):
     def get(self, request, username):
-        # Assume 'freelancer' is the context variable in freelancer_detail.html
+        # Retrieve the freelancer by username
         freelancer = get_object_or_404(CustomUser, username=username)
 
-
-        # Here we check if there's an existing chat between the two users
-        chat = Chat.objects.filter(participants__in=[request.user, freelancer]).distinct().first()
+        # Check if there's an existing chat with exactly these two participants
+        chat = Chat.objects.annotate(num_participants=Count('participants')).filter(num_participants=2, participants=request.user).filter(participants=freelancer).first()
 
         if not chat:
             # If no chat exists, create a new one

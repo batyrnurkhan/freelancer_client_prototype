@@ -1,11 +1,80 @@
 {% extends 'core/base.html' %}
+{% load static %}
+
+{% block page_specific_css %}
+<style>
+  .order-detail {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .order-detail h2 {
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .order-detail p {
+    font-size: 1.1em;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  .order-detail p strong {
+    color: #333;
+    margin-right: 5px;
+  }
+
+  .order-detail a {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 20px;
+    transition: background-color 0.2s;
+  }
+
+  .order-detail a:hover {
+    background-color: #0056b3;
+  }
+  .chat-button {
+    display: inline-block;
+    background-color: #28a745; /* Bootstrap 'success' green color */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 20px;
+    transition: background-color 0.2s;
+  }
+
+  .chat-button:hover {
+    background-color: #218838; /* A darker shade of green for the hover state */
+  }
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="order-detail">
   <h2>{{ order.title }}</h2>
   <p><strong>Client:</strong> {{ order.client.email }}</p>
   <p><strong>Description:</strong> {{ order.description }}</p>
   <p><strong>Technology Stack:</strong> {{ order.technology_stack }}</p>
-  <p><strong>Price:</strong> {{ order.price }}</p>
-  <p><strong>Created At:</strong> {{ order.created_at }}</p>
-  <!-- Add more fields as needed -->
+  <p><strong>Price:</strong> ${{ order.price }}</p>
+  <p><strong>Created At:</strong> {{ order.created_at|date:"F d, Y" }}</p>
+  {% if user.is_authenticated and user == order.client %}
+    <a href="{% url 'listings:order_update' slug=order.slug %}" class="edit-order-btn">Edit Order</a>
+  {% endif %}
+  {% if user.is_authenticated and user.user_type == 'freelancer' %}
+    <a href="{% url 'chat:start_chat' username=order.client.username %}" class="chat-button">Chat with Client</a>
+  {% endif %}
+</div>
 {% endblock %}

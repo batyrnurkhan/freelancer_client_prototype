@@ -1,18 +1,44 @@
 {% extends 'core/base.html' %}
-
+{% load static %}
 {% block content %}
-<h2>Chat Room: {{ chat.id }}</h2>
+<div class="chat-room">
+    <h2>Chat Room: {{ chat.id }}</h2>
 
-<div id="chat-log">
-    {% for message in messages %}
-        <p><strong>{{ message.author.username }}:</strong> {{ message.content }}</p>
-    {% empty %}
-        <p>No messages in this chat yet.</p>
-    {% endfor %}
-</div>
+    <div class="chat-log" id="chat-log">
+        {% for message in messages %}
+            <div class="message{% if message.author == request.user %} message-self{% endif %}">
+                {% if message.author.user_type == 'freelancer' %}
+                    {% with message.author.freelancer_profile as profile %}
+                        {% if profile.profile_image %}
+                            <img class="message-profile-image" src="{{ profile.profile_image.url }}" alt="{{ message.author.username }}">
+                        {% else %}
+                            <img class="message-profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Profile Image">
+                        {% endif %}
+                    {% endwith %}
+                {% elif message.author.user_type == 'client' %}
+                    {% with message.author.client_profile as profile %}
+                        {% if profile.profile_image %}
+                            <img class="message-profile-image" src="{{ profile.profile_image.url }}" alt="{{ message.author.username }}">
+                        {% else %}
+                            <img class="message-profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Profile Image">
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+                <div class="message-content">
+                    <strong>{{ message.author.username }}:</strong>
+                    <span>{{ message.content }}</span>
+                </div>
+            </div>
+        {% empty %}
+            <p class="no-messages">No messages in this chat yet.</p>
+        {% endfor %}
+    </div>
 
-<input type="text" id="chat-message-input" placeholder="Type your message here...">
-<button id="chat-message-submit">Send</button>
+
+    <div class="message-input">
+        <input type="text" id="chat-message-input" placeholder="Type your message here...">
+        <button id="chat-message-submit">Send</button>
+    </div>
 
 <script>
 // Ensuring that the DOM has fully loaded before running our script
@@ -24,10 +50,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // When a message is received through the WebSocket
     chatSocket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        const chatLog = document.querySelector('#chat-log');
-        chatLog.innerHTML += '<p><strong>' + data.username + ':</strong> ' + data.message + '</p>';
-    };
+    const data = JSON.parse(e.data);
+    const chatLog = document.querySelector('#chat-log');
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+    if (data.username === '{{ request.user.username }}') {
+        messageElement.classList.add('message-self');
+    }
+
+    // Update the message element to include the profile image
+    messageElement.innerHTML = `
+        <img class="message-profile-image" src="${data.profile_pic_url}" alt="${data.username}">
+        <div class="message-content">
+            <strong>${data.username}:</strong>
+            <span>${data.message}</span>
+        </div>
+    `;
+
+    // Append the new message to the chat log
+    chatLog.appendChild(messageElement);
+    chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll to the latest message
+};
 
     chatSocket.onclose = function(e) {
         console.error('Chat socket closed unexpectedly');
@@ -53,4 +96,72 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+{% endblock %}
+{% block page_specific_css %}
+<style>
+    .chat-room {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+    }
+    .chat-log {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+    }
+    .message {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .message-self {
+        justify-content: flex-end;
+    }
+    .message-profile-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+        object-fit: cover;
+    }
+    .message-content {
+        background-color: #e9e9e9;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    .message-self .message-content {
+        background-color: #d8f3dc;
+    }
+    .no-messages {
+        text-align: center;
+    }
+    .message-input {
+        display: flex;
+        margin-top: 20px;
+    }
+    #chat-message-input {
+        flex-grow: 1;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 10px;
+        margin-right: 10px;
+    }
+    #chat-message-submit {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    #chat-message-submit:hover {
+        background-color: #0056b3;
+    }
+</style>
 {% endblock %}

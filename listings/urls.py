@@ -2,12 +2,13 @@
 
 from django.urls import path
 from . import views
-from .views import OrderListView, OrderCreateView, OrderDetailView
+from .views import OrderListView, OrderCreateView, OrderDetailView,OrderUpdateView
 app_name = 'listings'
 urlpatterns = [
     path('orders/', OrderListView.as_view(), name='orders_list'),
     path('orders/<slug:slug>/', OrderDetailView.as_view(), name='order_detail'),
     path('create/', OrderCreateView.as_view(), name='order_create'),  # Create a new order
+    path('orders/<slug:slug>/update/', OrderUpdateView.as_view(), name='order_update'),
     # path('<slug:slug>/', views.OrderDetailView.as_view(), name='order_detail'),  # View order details by slug
     # # Add any additional URLs you need for your application
     # path('jobs/', JobListView.as_view(), name='job_list'),

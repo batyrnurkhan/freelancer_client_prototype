@@ -1,0 +1,82 @@
+/* How It Works Styles */
+.how-it-works {
+    padding: 40px 20px;
+    background: #ffffff;
+    text-align: center;
+}
+
+.how-it-works h2 {
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 2em;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.step {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.step h3 {
+    color: #5e9cae;
+    margin-bottom: 10px;
+}
+
+/* Testimonials Styles */
+.testimonials {
+    background: #e8f4f2;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.testimonials h2 {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+.testimonial {
+    margin-bottom: 20px;
+}
+
+.testimonial blockquote {
+    font-style: italic;
+    color: #666;
+}
+
+.testimonial .user {
+    color: #333;
+    font-weight: bold;
+}
+
+/* Call to Action Styles */
+.call-to-action {
+    background: #fff;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.call-to-action h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 2em;
+}
+
+.call-to-action p {
+    margin-bottom: 30px;
+    color: #666;
+}
+
+/* Adjustments for mobile */
+@media (max-width: 768px) {
+    .steps {
+        grid-template-columns: 1fr;
+    }
+}

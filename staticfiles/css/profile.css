@@ -103,6 +103,36 @@
   margin-top: 10px;
   white-space: pre-line; /* Ensures that line breaks are respected */
 }
+
+.profile-website a, .profile-contact-email a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.profile-website a:hover, .profile-contact-email a:hover {
+    text-decoration: underline;
+}
+
+.profile-details p {
+    margin-bottom: 5px;
+}
+
+.edit-profile-btn {
+    display: inline-block;
+    margin-top: 15px;
+    background-color: #5E9CAE;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.edit-profile-btn:hover {
+    background-color: #4A7C8E;
+}
+
+
 /* Responsive design adjustments */
 @media (max-width: 768px) {
     .profile-container {

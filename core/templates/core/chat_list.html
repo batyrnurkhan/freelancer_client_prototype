@@ -1,15 +1,84 @@
 {% extends 'core/base.html' %}
+{% load static %}
+
+{% block page_specific_css %}
+<link rel="stylesheet" href="{% static 'css/chat_list.css' %}" />
+<style>
+
+  .chat-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  .chat-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+  }
+  .chat-image-container {
+    margin-right: 15px;
+  }
+  .chat-profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .chat-info a {
+    display: block;
+    color: #333;
+    text-decoration: none;
+  }
+  .chat-info a:hover {
+    text-decoration: underline;
+  }
+  .no-chats {
+    text-align: center;
+  }
+</style>
+{% endblock page_specific_css %}
 
 {% block content %}
-<h1>Chats</h1>
-<ul>
-  {% for chat in chats %}
-  <li>
-    <a href="{% url 'chat:chat_detail' chat_id=chat.pk %}">Chat with {{ chat.participants.all|join:", " }}</a>
-  </li>
-  {% empty %}
-  <li>No chats yet.</li>
-  {% endfor %}
-
-</ul>
+<div class="chat-page">
+  <h1>Chats</h1>
+  <ul class="chat-list">
+    {% for chat in chats %}
+    <li class="chat-item">
+      {% for participant in chat.participants.all %}
+        {% if participant != request.user %}
+          <div class="chat-image-container">
+            <!-- Check if the participant is a freelancer or client and display the corresponding profile image -->
+            {% if participant.user_type == 'freelancer' %}
+              {% with participant.freelancer_profile as profile %}
+                {% if profile.profile_image %}
+                  <img class="chat-profile-image" src="{{ profile.profile_image.url }}" alt="{{ participant.username }}">
+                {% else %}
+                  <img class="chat-profile-image" src="{% static 'img/images.png' %}" alt="Default Profile Image">
+                {% endif %}
+              {% endwith %}
+            {% elif participant.user_type == 'client' %}
+              {% with participant.client_profile as profile %}
+                {% if profile.profile_image %}
+                  <img class="chat-profile-image" src="{{ profile.profile_image.url }}" alt="{{ participant.username }}">
+                {% else %}
+                  <img class="chat-profile-image" src="{% static 'img/images.png' %}" alt="Default Profile Image">
+                {% endif %}
+              {% endwith %}
+            {% endif %}
+          </div>
+          <div class="chat-info">
+            <a href="{% url 'chat:chat_detail' chat_id=chat.pk %}">
+              {{ participant.username }}
+            </a>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </li>
+    {% empty %}
+    <li class="no-chats">No chats yet.</li>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock %}

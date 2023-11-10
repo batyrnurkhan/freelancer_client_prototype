@@ -13,7 +13,7 @@
             {% elif user.client_profile.profile_image %}
                 <img class="profile-image" src="{{ user.client_profile.profile_image.url }}" alt="Client Profile Image">
             {% else %}
-                <img class="profile-image" src="{% static 'img/image.png' %}" alt="Default Profile Image">
+                <img class="profile-image" src="{% static 'img/images.png' %}" alt="Default Profile Image">
             {% endif %}
         </div>
 <div class="profile-details">
@@ -39,8 +39,17 @@
     {% endif %}
 
     {% elif user.user_type == "client" and user.client_profile %}
-        <p class="profile-company"><strong>Company Name:</strong> {{ user.client_profile.company_name }}</p>
-    {% else %}
+                <!-- Client specific fields -->
+                <p class="profile-company"><strong>Company Name:</strong> {{ user.client_profile.company_name }}</p>
+                <p class="profile-website"><strong>Website:</strong> <a href="{{ user.client_profile.company_website }}">{{ user.client_profile.company_website }}</a></p>
+                <p class="profile-contact-name"><strong>Contact Name:</strong> {{ user.client_profile.contact_name }}</p>
+                <p class="profile-contact-email"><strong>Contact Email:</strong> {{ user.client_profile.contact_email }}</p>
+                <p class="profile-contact-phone"><strong>Contact Phone:</strong> {{ user.client_profile.contact_phone }}</p>
+                <p class="profile-company-description"><strong>Company Description:</strong> {{ user.client_profile.company_description }}</p>
+                <p class="profile-industry"><strong>Industry:</strong> {{ user.client_profile.industry }}</p>
+                <p class="profile-preferred-communication"><strong>Preferred Communication:</strong> {{ user.client_profile.get_preferred_communication_display }}</p>
+                <p class="profile-additional-notes"><strong>Additional Notes:</strong> {{ user.client_profile.additional_notes }}</p>
+            {% else %}
         <p class="profile-error">User type not specified or profile not found.</p>
     {% endif %}
     <a href="{% url 'accounts:edit_profile' %}" class="edit-profile-btn">Edit Profile</a>

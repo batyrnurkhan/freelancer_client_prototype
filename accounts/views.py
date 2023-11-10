@@ -119,7 +119,7 @@ class FreelancerDetailView(LoginRequiredMixin, generic.DetailView):
 
 class ClientListView(LoginRequiredMixin, ListView):
     model = CustomUser  # Update this if you have a specific Client model
-    template_name = 'core/client_list.html'
+    template_name = 'core/clients_list.html'
     context_object_name = 'clients'
 
     def get_queryset(self):

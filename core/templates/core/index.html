@@ -1,24 +1,66 @@
 {% extends 'core/base.html' %}
-{% load static % }
+{% load static %}
 {% block title %}Home Page{% endblock title %}
-
+{% block page_specific_css %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}" />
+{% endblock page_specific_css %}
 {% block content %}
 <div class="hero">
-    <h2>Welcome to the Home Page</h2>
-    <p>Explore our features and offerings!</p>
-    <a href="#" class="hero-button">Get Started</a>
+    <h2>Welcome to MyApp!</h2>
+    <p>Your one-stop solution for connecting freelancers and clients.</p>
+    <a href="{% url 'accounts:signup' %}" class="hero-button">Sign Up Today</a>
 </div>
 
 <section class="features">
     <div class="feature">
-        <h3>Feature One</h3>
-        <p>Discover the power of Feature One and how it can help you.</p>
-        <a href="#" class="feature-button">Learn More</a>
+        <h3>Find Talent</h3>
+        <p>Access a pool of top freelancers ready to bring your projects to life.</p>
+        <a href="{% url 'accounts:freelancer-list' %}" class="feature-button">Browse Freelancers</a>
     </div>
     <div class="feature">
-        <h3>Feature Two</h3>
-        <p>Learn about Feature Two and its benefits for your workflow.</p>
-        <a href="#" class="feature-button">Learn More</a>
+        <h3>Get Projects</h3>
+        <p>As a freelancer, find projects that match your skills and expertise.</p>
+        <a href="{% url 'listings:orders_list' %}" class="feature-button">View Projects</a>
     </div>
+</section>
+
+<section class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps">
+        <div class="step">
+            <h3>Create An Account</h3>
+            <p>Sign up and choose your role as a freelancer or a client.</p>
+        </div>
+        <div class="step">
+            <h3>Post or Bid on Projects</h3>
+            <p>Clients post projects, while freelancers bid with their proposals.</p>
+        </div>
+        <div class="step">
+            <h3>Collaborate and Grow</h3>
+            <p>Work together to complete projects and grow your business or portfolio.</p>
+        </div>
+    </div>
+</section>
+
+<section class="testimonials">
+    <h2>What Our Users Say</h2>
+    <div class="testimonial">
+        <blockquote>
+            "MyApp has been instrumental in helping me find the right talent for my projects. The process is simple and effective!"
+        </blockquote>
+        <p class="user">- Alex Smith, Entrepreneur</p>
+    </div>
+    <div class="testimonial">
+        <blockquote>
+            "I've grown my freelance business significantly since joining MyApp. Highly recommend it to any freelancer looking for quality gigs."
+        </blockquote>
+        <p class="user">- Samantha Doe, Freelance Designer</p>
+    </div>
+</section>
+
+<section class="call-to-action">
+    <h2>Ready to get started?</h2>
+    <p>Join our community of professionals and start making your work more productive and enjoyable.</p>
+    <a href="{% url 'accounts:signup' %}" class="hero-button">Join Now</a>
 </section>
 {% endblock content %}

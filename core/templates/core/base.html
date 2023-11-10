@@ -17,10 +17,11 @@
 </head>
 <body>
 <header class="site-header">
+
     <div class="wrapper">
         <nav class="main-nav">
             <a href="{% url 'home' %}" class="logo">
-                <img src="https://via.placeholder.com/150x50?text=Logo" alt="MyApp Logo" class="navbar-logo">
+                <img src="{% static 'img/logo.jpeg' %}" alt="MyApp Logo" class="navbar-logo">
             </a>
             <ul>
                 <li><a href="{% url 'home' %}" class="nav-button">Home</a></li>
@@ -28,7 +29,7 @@
                     <li><a href="{% url 'chat:chat_list' %}" class="nav-button">Chats</a></li>
                     <li><a href="{% url 'listings:orders_list' %}" class="nav-button">Orders</a></li>
                         {% if user.user_type == 'freelancer' %}
-        <li><a href="{% url 'accounts:client-list' %}" class="nav-button">Clients</a></li>
+<!--        <li><a href="{% url 'accounts:client-list' %}" class="nav-button">Clients</a></li>-->
     {% elif user.user_type == 'client' %}
         <li><a href="{% url 'accounts:freelancer-list' %}" class="nav-button">Freelancers</a></li>
     {% endif %}
@@ -50,8 +51,10 @@
                     <li><a href="{% url 'accounts:logout' %}" class="nav-button">Logout</a></li>
                 {% endif %}
             </ul>
+
         </nav>
     </div>
+
 </header>
 
 
@@ -61,6 +64,7 @@
     {% endblock content %}
 </main>
 
+<div class="site-footer-push"></div> <!-- This element pushes the footer down -->
 <footer class="site-footer">
     <div class="wrapper">
         <p>© 2023 MyApp - All rights reserved.</p>

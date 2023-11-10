@@ -12,7 +12,7 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'orders'
 
     def get_queryset(self):
-        return Order.objects.filter(client=self.request.user)
+        return Order.objects.all()
 
 class OrderCreateView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView):
     model = Order
@@ -38,7 +38,22 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'order'
     slug_url_kwarg = 'slug'
 
+from django.views.generic import UpdateView
+class OrderUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Order
+    form_class = OrderForm
+    template_name = 'core/order_form.html'  # You can create a specific template for updating if necessary
+    context_object_name = 'order'
+    slug_url_kwarg = 'slug'
+    success_url = reverse_lazy('listings:orders_list')
 
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def test_func(self):
+        # Ensures that only the client who created the order or an admin can update it
+        order = self.get_object()
+        return self.request.user == order.client or self.request.user.is_staff
 # listings/views.py
 
 # from .models import Job

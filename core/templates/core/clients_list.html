@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'core/base.html' %}
 
 {% block content %}
 <h1>Select a Client to Message</h1>
 <ul>
   {% for client in object_list %}
   <li>
-    <a href="{% url 'start_chat' username=client.username %}">{{ client.username }}</a>
+    <a href="{% url 'chat:start_chat' username=client.username %}">{{ client.username }}</a>
   </li>
   {% empty %}
   <li>No clients available.</li>

@@ -1,17 +1,87 @@
 {% extends 'core/base.html' %}
+{% load static %}
+
+{% block page_specific_css %}
+<style>
+  h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2em;
+  }
+
+  .order-list {
+    list-style-type: none;
+    padding: 0;
+    max-width: 800px;
+    margin: 20px auto;
+  }
+
+  .order-list li {
+    background: #fff;
+    border-left: 5px solid #5cb85c; /* A colored border for visual appeal */
+    margin-bottom: 15px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Ensures that the child elements do not overflow */
+  }
+
+  .order-list li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .order-list a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 20px 30px;
+    transition: background-color 0.2s;
+  }
+
+  .order-list a:hover {
+    background-color: #f8f8f8;
+    text-decoration: none;
+  }
+
+  .create-order-button {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .btn {
+    background-color: #5cb85c; /* Green color to match the border */
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    transition: background-color 0.2s;
+    cursor: pointer;
+  }
+
+  .btn:hover {
+    background-color: #4cae4c; /* A darker shade of green for the hover state */
+  }
+</style>
+{% endblock %}
 
 {% block content %}
   <h2>Order List</h2>
-  <ul>
+  <ul class="order-list">
     {% for order in orders %}
-      <li><a href="{% url 'listings:order_detail' slug=order.slug %}">{{ order.title }}</a>
-</li>
+      <li>
+        <a href="{% url 'listings:order_detail' slug=order.slug %}">
+          {{ order.title }}
+        </a>
+      </li>
     {% endfor %}
   </ul>
-{% if user.is_authenticated and user.user_type == 'client' %}
+  {% if user.is_authenticated and user.user_type == 'client' %}
   <div class="create-order-button">
-    <a href="{% url 'listings:order_create' %}" class="btn btn-primary">Create Order</a>
+    <a href="{% url 'listings:order_create' %}" class="btn">Create Order</a>
   </div>
-{% endif %}
-
+  {% endif %}
 {% endblock %}
