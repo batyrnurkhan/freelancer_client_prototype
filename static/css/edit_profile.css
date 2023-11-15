@@ -2,14 +2,14 @@
   max-width: 800px;
   margin: 30px auto;
   padding: 20px;
-  background-color: #fff;
+  background-color: #F5D7DB; /* Light pink background */
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .edit-profile-container h2 {
   text-align: center;
-  color: #333;
+  color: #473E66; /* Dark purple for heading */
   margin-bottom: 30px;
 }
 
@@ -25,7 +25,7 @@
 .edit-profile-container form label {
   display: block;
   margin-bottom: 5px;
-  color: #666;
+  color: #1B3358; /* Secondary blue for labels */
 }
 
 .edit-profile-container form input[type='text'],
@@ -34,9 +34,11 @@
 .edit-profile-container form textarea {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #BD83B8; /* Light purple border */
   border-radius: 4px;
-  box-sizing: border-box; /* Make sure padding doesn't affect overall width */
+  background-color: #FFFFFF; /* White background for input */
+  color: #06142E; /* Dark blue text */
+  box-sizing: border-box;
 }
 
 .edit-profile-container form textarea {
@@ -45,17 +47,18 @@
 
 .edit-profile-container form button[type='submit'] {
   padding: 10px 15px;
-  background-color: #5e9ca0;
+  background-color: #F1916D; /* Coral for button */
   border: none;
   border-radius: 4px;
   color: white;
   font-size: 16px;
   cursor: pointer;
   margin-top: 20px;
+  transition: background-color 0.3s;
 }
 
 .edit-profile-container form button[type='submit']:hover {
-  background-color: #4a7c8e;
+  background-color: #BD83B8; /* Light purple on hover */
 }
 
 /* Responsive adjustments */

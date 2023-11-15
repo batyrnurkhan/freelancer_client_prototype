@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'core',
     # Third-party apps
     'channels',
+    'clearcache',
 ]
 
 MIDDLEWARE = [
@@ -114,3 +115,13 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'makyzhanbatyr@gmail.com'  # Use your Gmail address
+EMAIL_HOST_PASSWORD = 'hmqm tvfw xonf zbje'  # Use your Gmail password or app password
+

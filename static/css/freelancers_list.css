@@ -1,8 +1,9 @@
 /* Container for freelancers */
 .freelancers-container {
-  margin: auto;
+  margin: 40px auto;
   max-width: 1200px;
   padding: 20px;
+  background-color: #F5D7DB; /* Light pink background */
 }
 
 /* Search container */
@@ -26,20 +27,21 @@
 /* Input and Select styles */
 .search-form input[type="text"],
 .search-form select {
-  border: 1px solid #ccc;
+  border: 1px solid #BD83B8; /* Light purple border */
   border-radius: 4px;
   flex-grow: 1;
   padding: 10px;
+  background-color: #FFFFFF; /* White background for inputs */
 }
 
 /* Select width adjustment */
 .search-form select {
-  width: auto; /* Adjust width of select to content */
+  width: auto;
 }
 
 /* Button styles */
 .search-form button {
-  background-color: #007bff;
+  background-color: #F1916D; /* Coral for buttons */
   border: none;
   border-radius: 4px;
   color: white;
@@ -50,7 +52,7 @@
 
 /* Button hover effect */
 .search-form button:hover {
-  background-color: #0056b3;
+  background-color: #BD83B8; /* Light purple on hover */
 }
 
 /* Freelancer cards styling */
@@ -65,8 +67,8 @@
 
 /* Individual freelancer card */
 .freelancer-list-item {
-  background: #fff;
-  border: 1px solid #ddd;
+  background: #FFFFFF; /* White background for cards */
+  border: 1px solid #BD83B8; /* Light purple border */
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -81,13 +83,45 @@
 
 /* Freelancer text and links */
 .freelancer-link {
-  color: inherit;
+  color: #473E66; /* Dark purple for links */
   text-decoration: none;
 }
 
 /* Freelancer info */
 .freelancer-info {
   text-align: center;
+}
+
+/* Freelancer info emphasis */
+.freelancer-info strong {
+  color: #06142E; /* Dark blue for emphasis */
+  display: block;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Info division */
+.freelancer-info > div {
+  margin-bottom: 5px;
+  color: #1B3358; /* Secondary blue */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .freelancer-list-ul {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .search-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .search-form input[type="text"],
+  .search-form select,
+  .search-form button {
+    width: calc(100% - 20px); /* Adjust width for smaller screens */
+  }
 }
 
 /* Freelancer info emphasis */

@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import SignUpView, SignInView, ProfileUpdateView, ProfileDetailView, FreelancerListView, LogoutView, FreelancerDetailView,ClientListView, ClientDetailView
-
+from django.contrib.auth import views as auth_views
 app_name = 'accounts'
+
 urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
     path('signin/', SignInView.as_view(), name='signin'),
@@ -12,4 +13,6 @@ urlpatterns = [
     path('freelancers/<int:pk>/', FreelancerDetailView.as_view(), name='freelancer_detail'),
     path('clients/', ClientListView.as_view(), name='client-list'),
     path('clients/<int:pk>/', ClientDetailView.as_view(), name='client_detail'),
+
+
 ]

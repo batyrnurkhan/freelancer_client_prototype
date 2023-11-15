@@ -1,0 +1,124 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block page_specific_css %}
+<style>
+  body {
+    background-color: #f0f4f8; /* Soft blue background */
+  }
+
+  .order-form-container {
+    max-width: 600px;
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin: 2rem auto;
+  }
+
+  h2 {
+    text-align: center;
+    color: #333333;
+    margin-bottom: 1.5rem;
+  }
+
+  form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: .5rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #cccccc;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+
+  input[type="checkbox"] {
+    margin-right: .5rem;
+  }
+
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .checkbox-group label {
+    margin: 0;
+    flex-grow: 1;
+  }
+
+  .btn {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .btn-create {
+    background-color: #007bff;
+  }
+
+  .btn-create:hover {
+    background-color: #0056b3;
+  }
+
+  .btn-cancel {
+    background-color: #6c757d;
+  }
+
+  .btn-cancel:hover {
+    background-color: #5a6268;
+  }
+select[multiple] {
+  height: auto; /* Adjust height automatically based on the content */
+  background-color: #f8f9fa; /* Light background color for the select box */
+  border: 1px solid #ced4da; /* Border color similar to inputs */
+}
+
+/* This will style the options inside the select box */
+select[multiple] option {
+  padding: 0.5rem; /* Padding for each option */
+}
+  @media (max-width: 768px) {
+    .order-form-container {
+      padding: 1rem;
+    }
+
+    .btn {
+      padding: .8rem 1.5rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="order-form-container">
+  <h2>Create New Order</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.title.label_tag }} {{ form.title }}
+    {{ form.description.label_tag }} {{ form.description }}
+    {{ form.skills.label_tag }} {{ form.skills }}
+    {{ form.price.label_tag }} {{ form.price }}
+    <button type="submit" class="btn btn-create">Create Order</button>
+  </form>
+  <a href="{{ success_url }}" class="btn btn-cancel">Cancel</a>
+</div>
+{% endblock %}

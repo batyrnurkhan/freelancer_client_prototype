@@ -11,11 +11,11 @@
             {% if freelancer.profile_image %}
                 <img class="profile-image" src="{{ freelancer.profile_image.url }}" alt="Freelancer Profile Image">
             {% else %}
-                <img class="profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Profile Image">
+                <img class="profile-image" src="{% static 'img/images.png' %}" alt="Default Profile Image">
             {% endif %}
         </div>
         <div class="profile-details">
-            <h1 class="profile-name">{{ freelancer.user.username }}</h1>
+            <h1 class="profile-name">{{ freelancer.user.first_name }} {{ freelancer.user.last_name }}</h1>
             <p class="profile-email"><strong>Email:</strong> {{ freelancer.user.email }}</p>
             <p class="profile-portfolio"><strong>Portfolio:</strong> <a href="{{ freelancer.portfolio }}">{{ freelancer.portfolio }}</a></p>
             <div class="profile-skills">

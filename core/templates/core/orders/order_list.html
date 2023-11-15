@@ -1,0 +1,168 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block page_specific_css %}
+<style>
+  /* Container styles */
+  .orders-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 40px auto;
+  }
+
+  .container {
+    flex: 1;
+    min-width: 300px; /* Minimum width for each container */
+    border: 1px solid #BD83B8; /* Light purple border */
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #F5D7DB; /* Light pink background */
+  }
+
+  /* Order list styles */
+  .order-list {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .order-list li {
+    background: #FFFFFF; /* White background */
+    border-left: 5px solid #F1916D; /* Coral left border for orders */
+    margin-bottom: 15px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .order-list li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .order-list a {
+    text-decoration: none;
+    color: #473E66; /* Dark purple for text */
+    display: block;
+    padding: 20px 30px;
+  }
+
+  .order-list a:hover {
+    background-color: #E8F4F2; /* Light hover background */
+  }
+
+  /* Button styles */
+  .take-order-btn {
+    background-color: #F1916D; /* Coral for button */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    display: block; /* Block level for full width */
+    width: 100%; /* Full width of the parent */
+    text-align: center; /* Center the text */
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .take-order-btn:hover {
+    background-color: #BD83B8; /* Light purple on hover */
+  }
+
+
+  /* Headings and button container styles */
+  h2 {
+    text-align: center;
+    color: #06142E; /* Dark blue for headings */
+    margin-bottom: 30px;
+    font-size: 2em;
+  }
+
+  .create-order-button {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .order-item {
+    background: #FFFFFF; /* White background for each order */
+    border: 1px solid #BD83B8; /* Light purple border */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    position: relative; /* Position relative for absolute positioning of the button */
+    padding-bottom: 60px; /* Add padding to accommodate the button */
+  }
+
+  /* Position the Take Order button at the bottom of the order item */
+  .order-item form {
+    position: absolute;
+    bottom: 10px; /* Positioned 10px from the bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Offset by half of its width */
+    width: calc(100% - 40px); /* Full width minus padding */
+  }
+
+  .order-item a {
+    color: #473E66; /* Dark purple text */
+    text-decoration: none; /* Remove underline */
+  }
+
+  .order-item a:hover {
+    color: #F1916D; /* Coral color on hover */
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="orders-container">
+  <!-- Open Orders Container -->
+  <div class="container">
+    <h2>Open Orders</h2>
+    <ul class="order-list">
+      {% for order in open_orders %}
+     <li class="order-item">
+        <a href="{% url 'listings:order_detail' slug=order.slug %}">
+          {{ order.title }}
+          <span class="status">Status: {{ order.get_status_display }}</span>
+        </a>
+        {% if user.is_authenticated and user.user_type == 'freelancer' %}
+        <form method="post" action="{% url 'listings:take_order' order.id %}">
+          {% csrf_token %}
+          <button type="submit" class="take-order-btn">Take Order</button>
+        </form>
+        {% endif %}
+      </li>
+      {% empty %}
+      <li>No open orders available.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Taken Orders Container -->
+  {% if user.is_authenticated and user.user_type == 'freelancer' and taken_orders %}
+  <div class="container">
+    <h2>Your Orders</h2>
+    <ul class="order-list">
+      {% for order in taken_orders %}
+      <li>
+        <a href="{% url 'listings:order_detail' slug=order.slug %}">
+          {{ order.title }}
+          <span class="status">Status: {{ order.get_status_display }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+
+{% if user.is_authenticated and user.user_type == 'client' %}
+<div class="create-order-button">
+  <a href="{% url 'listings:order_create' %}" class="btn">Create Order</a>
+</div>
+{% endif %}
+{% endblock %}

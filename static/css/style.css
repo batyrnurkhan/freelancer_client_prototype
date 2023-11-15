@@ -5,217 +5,131 @@
     padding: 0;
 }
 
+html, body {
+    height: 100%;
+    color: #F5D7DB; /* Light pink for text */
+}
+
+.site {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Viewport height */
+    background-color: #06142E; /* Dark blue background */
+}
+
+.main-content {
+    flex: 1; /* Pushes the footer down */
+    background-color: #1B3358; /* Secondary blue for main content */
+}
 
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     line-height: 1.6;
-    color: #4A4A4A;
-    background-color: #F5F5F5;
 }
 
 .wrapper {
-    max-width: 1200px; /* Max width to contain the wrapper */
-    width: 100%; /* Full width */
-    margin: auto; /* Centering the wrapper */
-    padding: 0 20px; /* Padding only on the sides */
+    max-width: 1200px;
+    width: 100%;
+    margin: auto;
+    padding: 0 20px;
 }
 
 /* Header Styles */
 .site-header {
-    background: #FFFFFF;
-    padding: 5px 0; /* Further reduced padding */
+    background: #473E66; /* Dark purple background */
+    padding: 10px 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex; /* Ensures flex layout for the header */
-    align-items: center; /* Aligns items vertically in the center */
-    justify-content: space-between; /* Distributes space between and around content items */
 }
 
 .logo {
-    flex: 1; /* Allows the logo to grow and take up space */
-    display: flex;
-    align-items: center; /* Aligns the logo image vertically */
-    justify-content: flex-start; /* Aligns the logo image to the left */
+    margin-right: auto; /* Pushes everything else to the right */
 }
 
 .logo img.navbar-logo {
-    height: 30px; /* Adjust height as needed */
-    width: auto; /* Keeps the image aspect ratio intact */
-}
-
-.logo h1 {
-    font-size: 20px; /* Optional: Reduce size if needed */
-    margin-bottom: 0;
-    color: #333333;
-    display: none; /* Hide text logo when image is present */
+    height: 30px;
+    width: auto;
 }
 
 .main-nav {
-    flex: 2; /* Allows the navigation to grow and take up more space */
     display: flex;
-    justify-content: flex-end; /* Aligns the nav items to the right */
+    justify-content: flex-end;
 }
 
 .main-nav ul {
     list-style: none;
-    margin: 0;
-    padding: 0;
     display: flex;
     align-items: center;
 }
 
 .main-nav li {
-    margin-left: 10px; /* Adjust spacing between nav items */
+    margin-left: 10px;
 }
 
 .nav-button {
     background: none;
-    border: 0;
-    font-size: 14px; /* Adjust font size as needed */
-    padding: 5px 10px; /* Adjust padding as needed */
-    color: #333333;
+    border: none;
+    font-size: 14px;
+    padding: 5px 10px;
+    color: #F5D7DB; /* Light pink for buttons */
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .nav-button:hover, .nav-button:focus {
-    color: #5E9CAE;
-}
-
-
-/* Hero Styles */
-.hero {
-    text-align: center;
-    padding: 60px 20px;
-    background: #E8F4F2;
-    margin-bottom: 40px;
-}
-
-.hero h2 {
-    font-size: 30px;
-    color: #333333;
-    margin-bottom: 20px;
-}
-
-.hero p {
-    font-size: 18px;
-    color: #666666;
-    margin-bottom: 25px;
-}
-
-.hero-button {
-    display: inline-block;
-    font-size: 18px;
-    color: #fff;
-    background: #5E9CAE;
-    padding: 10px 30px;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
-
-.hero-button:hover {
-    background: #4A7C8E;
-}
-
-/* Features Styles */
-.features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 40px 20px;
-}
-
-.feature {
-    background: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.feature h3 {
-    margin-bottom: 15px;
-    color: #5E9CAE;
-}
-
-.feature p {
-    margin-bottom: 20px;
-    color: #666666;
-}
-
-.feature-button {
-    display: inline-block;
-    font-size: 16px;
-    color: #fff;
-    background: #7FB3B5;
-    padding: 10px 25px;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
-
-.feature-button:hover {
-    background: #699A9B;
+    color: #BD83B8; /* Light purple for hover */
 }
 
 /* Footer Styles */
 .site-footer {
-    background: #E8F4F2;
+    background: #F1916D; /* Coral color */
     padding: 20px 0;
+    color: #F5D7DB; /* Light pink text */
     text-align: center;
 }
 
+/* Dropdown styles */
 .dropbtn {
     cursor: pointer;
+    color: #F5D7DB;
 }
 
-/* Dropdown Content (Hidden by default) */
 .dropdown {
-    position: relative; /* This ensures the dropdown content positions itself relative to this container */
-    display: inline-block; /* For inline alignment with other nav items */
+    position: relative;
+    display: inline-block;
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #f9f9f9;
+    background-color: #473E66; /* Dark purple */
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
-    top: 100%; /* Positions the dropdown right under the button */
-    left: 0; /* Align to the left edge of the parent '.dropdown' */
+    top: 100%;
+    left: 0;
 }
 
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
-
-/* Links inside the dropdown */
 .dropdown-content a {
-    color: black;
+    color: #F5D7DB;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
 
-/* Change color of dropdown links on hover */
 .dropdown-content a:hover {
-    background-color: #f1f1f1;
+    background-color: #BD83B8; /* Light purple */
 }
 
 /* Responsive Styles */
 @media (max-width: 768px) {
     .wrapper {
-        padding: 0 10px; /* Reduced padding on smaller screens */
+        padding: 0 10px;
     }
 
-    .dropdown-content {
-        width: 100%; /* Full width on smaller screens */
-    }
-}
-
-@media (max-width: 768px) {
     .site-header {
         flex-direction: column;
         align-items: center;
@@ -235,8 +149,8 @@ body {
     }
 
     .dropdown-content {
-        right: 0; /* Full width on mobile */
+        right: 0;
         left: 0;
-        width: 100%; /* Make dropdown full width */
+        width: 100%;
     }
 }

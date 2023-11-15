@@ -1,18 +1,19 @@
-# in listing/urls.py
-
 from django.urls import path
 from . import views
-from .views import OrderListView, OrderCreateView, OrderDetailView,OrderUpdateView
+
 app_name = 'listings'
+
 urlpatterns = [
-    path('orders/', OrderListView.as_view(), name='orders_list'),
-    path('orders/<slug:slug>/', OrderDetailView.as_view(), name='order_detail'),
-    path('create/', OrderCreateView.as_view(), name='order_create'),  # Create a new order
-    path('orders/<slug:slug>/update/', OrderUpdateView.as_view(), name='order_update'),
-    # path('<slug:slug>/', views.OrderDetailView.as_view(), name='order_detail'),  # View order details by slug
-    # # Add any additional URLs you need for your application
-    # path('jobs/', JobListView.as_view(), name='job_list'),
-    # path('jobs/create/', JobCreateView.as_view(), name='job_create'),
-    # path('jobs/<int:pk>/', JobDetailView.as_view(), name='job_detail'),
-    # path('jobs/<int:pk>/update/', JobUpdateView.as_view(), name='job_update'),
+    # Order views
+    path('orders/', views.OrderListView.as_view(), name='orders_list'),
+    path('orders/create/', views.OrderCreateView.as_view(), name='order_create'),
+    path('orders/<slug:slug>/', views.OrderDetailView.as_view(), name='order_detail'),
+    path('orders/<slug:slug>/update/', views.OrderUpdateView.as_view(), name='order_update'),
+
+    # Actions for orders
+    path('orders/<int:order_id>/take/', views.TakeOrderView.as_view(), name='take_order'),
+    path('orders/<int:order_id>/update_status/', views.UpdateOrderStatusView.as_view(), name='update_order_status'),
+
+    # Freelancer-specific views
+    path('freelancer/taken-orders/', views.TakenOrdersListView.as_view(), name='taken_orders_list'),
 ]

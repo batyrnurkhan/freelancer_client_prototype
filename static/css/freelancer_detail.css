@@ -3,11 +3,12 @@
   max-width: 1200px;
   margin: 20px auto;
   padding: 20px;
+  background-color: #F5D7DB; /* Light pink background */
 }
 
 .profile-card {
-  background: #fff;
-  border: 1px solid #ddd;
+  background: #FFFFFF;
+  border: 1px solid #BD83B8; /* Light purple border */
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -24,6 +25,7 @@
   border-radius: 50%;
   margin: 0 auto;
   display: block;
+  border: 3px solid #473E66; /* Dark purple border */
 }
 
 .profile-details {
@@ -31,16 +33,18 @@
 }
 
 .profile-name {
-  color: #333;
+  color: #06142E; /* Dark blue for text */
   font-size: 24px;
   margin: 10px 0;
 }
 
 .profile-email {
+  color: #1B3358; /* Secondary blue */
   margin-bottom: 10px;
 }
 
 .profile-portfolio {
+  color: #473E66; /* Dark purple */
   margin-bottom: 10px;
 }
 
@@ -54,20 +58,21 @@
   display: inline-block;
   margin: 5px;
   padding: 5px 10px;
-  background: #e1e1e1;
+  background: #F1916D; /* Coral for skills background */
   border-radius: 20px;
+  color: #FFFFFF; /* White text */
 }
 
 .reviews {
-  background-color: #f8f9fa;
-  border-left: 4px solid #5e9cae;
+  background-color: #E8F4F2; /* Light background */
+  border-left: 4px solid #BD83B8; /* Light purple border */
   padding: 10px;
   margin-top: 10px;
   white-space: pre-line;
 }
 
 .edit-profile-btn {
-  background-color: #5e9cae;
+  background-color: #F1916D; /* Coral */
   color: white;
   padding: 10px 20px;
   text-decoration: none;
@@ -79,11 +84,11 @@
 }
 
 .edit-profile-btn:hover {
-  background-color: #4a7c8e;
+  background-color: #BD83B8; /* Light purple on hover */
 }
 
 .start-chat-btn {
-  background-color: #4CAF50; /* Green */
+  background-color: #1B3358; /* Secondary blue */
   border: none;
   color: white;
   padding: 15px 32px;
@@ -98,7 +103,7 @@
 }
 
 .start-chat-btn:hover {
-  background-color: #45a049;
+  background-color: #06142E; /* Dark blue on hover */
 }
 
 /* Responsive design adjustments */

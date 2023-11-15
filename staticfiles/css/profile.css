@@ -1,23 +1,31 @@
+/* General Profile Container Styles */
 .profile-container {
-    max-width: 90%; /* Adjust this to your preference for max width */
-    margin: 20px auto; /* Top and bottom margin 20px, auto margin on left and right centers the container */
+    border-radius: 50px;
+    max-width: 90%;
+    margin: 20px auto;
     display: flex;
-    flex-direction: column; /* Stack the items vertically */
-    align-items: center; /* Center items horizontally */
+    flex-direction: column;
+    align-items: center;
+    background-color: #F5D7DB; /* Light pink background */
 }
 
+/* Profile Card Styles */
 .profile-card {
-    width: 100%; /* Make the card take the full width of the container */
-    border: 1px solid #ddd;
+    display: flex;
+    align-items: start; /* Align items to the start */
+    gap: 20px; /* Space between image and details */
+    width: 100%;
+    border: 1px solid #BD83B8; /* Light purple border */
     padding: 20px;
     border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Optional shadow for depth */
-    margin-bottom: 20px; /* Adds space below the card */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    background-color: #FFFFFF; /* White background for the card */
 }
 
-
+/* Profile Image Styles */
 .profile-image-container {
-    flex-shrink: 0; /* prevents the image container from shrinking */
+    flex-shrink: 0;
 }
 
 .profile-image {
@@ -25,77 +33,95 @@
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #ddd;
+    border: 3px solid #473E66; /* Dark purple border */
 }
 
+/* Profile Details Styles */
 .profile-details {
-    background: #f7f7f7;
+    flex-grow: 1;
+    background: #FFFFFF;
+    color: #06142E; /* Dark blue for text */
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Profile Name Styles */
 .profile-name {
-    color: #333;
+    color: #06142E; /* Dark blue */
     margin-bottom: 10px;
 }
 
+/* Profile Information Block Styles */
 .profile-email, .profile-type, .profile-portfolio, .profile-company {
-    background: #fff;
+    background: #F5D7DB; /* Light pink background */
     padding: 10px;
     border-radius: 4px;
     margin-bottom: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Skills List Styles */
 .skills-list {
     list-style: none;
     padding: 0;
+    margin: 0;
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-direction: column; /* Align skills vertically */
+    gap: 5px; /* Space between skills */
 }
 
 .skills-list li {
-    background: #e1e1e1;
+    background: #F1916D; /* Coral background */
+    color: #FFFFFF; /* White text */
     padding: 5px 15px;
-    border-radius: 20px;
+    border-radius: 20px; /* Pill-like rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    font-weight: bold; /* Make the text bold */
+    text-transform: uppercase; /* UPPERCASE text */
+}
+
+/* Button Styles */
+.edit-profile-btn-container {
+    width: 100%; /* Full width */
+    display: flex; /* Use flexbox for positioning */
+    justify-content: center; /* Center button horizontally */
+    padding: 10px 0; /* Padding top and bottom */
 }
 
 .edit-profile-btn {
-    background-color: #5e9cae;
+    background-color: #5E9CAE;
     color: white;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 4px;
     border: none;
     cursor: pointer;
-    display: inline-block; /* Allows the button to align with text */
-    margin-top: 20px; /* Adds space above the button */
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    display: inline-block; /* Keep it inline for the flex container */
+    transition: background-color 0.3s ease;
 }
 
 .edit-profile-btn:hover {
-    background-color: #4a7c8e; /* Darker shade on hover */
+    background-color: #4A7C8E;
 }
 
+/* Error Message Styles */
 .profile-error {
-    color: #d9534f; /* Bootstrap's btn-danger color for error messages */
+    color: #D9534F; /* Red color for errors */
 }
 
-/* Additional styles for visual hierarchy and spacing */
+/* Additional Spacing and Alignment */
 .profile-header {
-    margin-bottom: 30px; /* Adds space below the header section */
+    text-align: center; /* Center the content inside header */
+    margin-bottom: 20px;
 }
 
-.profile-details {
-    margin-bottom: 30px; /* Adds space below the details section */
+.profile-details p {
+    margin-bottom: 5px;
 }
 
-.profile-skills {
-    margin-top: 20px; /* Adds space above the skills list */
-}
-
+/* Reviews Styles */
 .reviews {
   background-color: #f8f9fa;
   border-left: 4px solid #5e9cae;
@@ -104,6 +130,7 @@
   white-space: pre-line; /* Ensures that line breaks are respected */
 }
 
+/* Link Styles */
 .profile-website a, .profile-contact-email a {
     color: #007bff;
     text-decoration: none;
@@ -112,48 +139,112 @@
 .profile-website a:hover, .profile-contact-email a:hover {
     text-decoration: underline;
 }
-
-.profile-details p {
-    margin-bottom: 5px;
+.user-profile {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 700px;
+    padding: 30px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
-.edit-profile-btn {
-    display: inline-block;
-    margin-top: 15px;
-    background-color: #5E9CAE;
-    color: white;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 5px;
+.user-name {
+    color: #2E86C1;
+    font-size: 2em;
+    text-align: left;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #2E86C1;
+    padding-bottom: 10px;
+}
+
+.user-details {
+    color: #4A4A4A;
+}
+
+.detail {
+    line-height: 1.8;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.label {
     font-weight: bold;
+    color: #2E86C1;
 }
 
-.edit-profile-btn:hover {
-    background-color: #4A7C8E;
+.client-link {
+    color: #2E86C1;
+    text-decoration: none;
 }
 
+.client-link:hover {
+    text-decoration: underline;
+    color: #21618C;
+}
 
-/* Responsive design adjustments */
+.client-orders {
+    background: #FFFFFF;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; /* Space from the profile image */
+}
+
+.orders-list {
+    list-style: none;
+    padding: 0;
+}
+
+.orders-list li {
+    background: #f2f2f2;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.orders-list li strong {
+    color: #5E9CAE;
+    margin-bottom: 5px;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .user-profile {
+        padding: 20px;
+    }
+
+    .user-name {
+        font-size: 1.8em;
+    }
+
+    .detail {
+        font-size: 1em;
+    }
+}
+
+/* Responsive Design Adjustments */
 @media (max-width: 768px) {
     .profile-container {
-        max-width: 100%; /* Full width on smaller screens */
-        padding: 0 10px; /* Optional padding to ensure some space on the sides */
+        max-width: 100%;
+        padding: 0 10px;
     }
 
     .profile-card {
-        padding: 10px; /* Reduced padding on smaller screens */
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .profile-header, .profile-details {
+        flex: none;
     }
 
     .profile-details {
-        padding: 15px; /* Reduced padding on smaller screens */
-    }
-
-    .skills-list {
-        justify-content: center; /* Center skills on smaller screens */
+        padding: 15px;
     }
 
     .edit-profile-btn {
         width: 100%; /* Full width button on smaller screens */
-        text-align: center; /* Center the text inside the button */
+        margin-top: 15px; /* Adjust as needed */
     }
 }

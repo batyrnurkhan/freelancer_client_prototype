@@ -5,11 +5,12 @@ from .models import CustomUser, Profile
 class CustomUserCreationForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password', 'user_type')
+        fields = ('username', 'email', 'password', 'user_type', 'first_name', 'last_name')
 
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password"])
+        # You can add any custom logic for first_name and last_name here if necessary
         if commit:
             user.save()
         return user
@@ -22,6 +23,8 @@ class ProfileForm(forms.ModelForm):
 from .models import FreelancerProfile, Skill
 
 class FreelancerProfileForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=30, required=False)
+    last_name = forms.CharField(max_length=30, required=False)
     skills = forms.ModelMultipleChoiceField(
         queryset=Skill.objects.all(), 
         widget=forms.CheckboxSelectMultiple,
@@ -30,7 +33,7 @@ class FreelancerProfileForm(forms.ModelForm):
 
     class Meta:
         model = FreelancerProfile
-        fields = ['skills', 'portfolio', 'profile_image']
+        fields = ['first_name', 'last_name', 'skills', 'portfolio', 'profile_image']
 
 from .models import Rating
 

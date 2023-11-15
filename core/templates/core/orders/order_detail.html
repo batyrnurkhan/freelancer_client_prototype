@@ -1,0 +1,107 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block page_specific_css %}
+<style>
+  body {
+    background-color: #F5D7DB; /* Light pink background */
+    font-family: 'Arial', sans-serif;
+  }
+  .order-detail-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to start for better visual alignment */
+    flex-wrap: wrap; /* Ensure responsiveness */
+    max-width: 800px;
+    margin: 50px auto; /* Increased margin for more space */
+    padding: 25px;
+    background: #FFFFFF; /* White background */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); /* More pronounced shadow for depth */
+    border: 2px solid #BD83B8; /* Thicker light purple border */
+  }
+
+  .order-info {
+    flex: 1 1 60%; /* Flex basis set to 60% */
+    margin-right: 20px; /* Added right margin */
+  }
+
+  .order-info h2 {
+    color: #473E66; /* Dark purple for heading */
+    margin-bottom: 15px;
+    font-size: 1.8rem; /* Larger font size for heading */
+  }
+
+  .order-info p {
+    font-size: 1rem;
+    color: #06142E; /* Dark blue text */
+    line-height: 1.5; /* Improved line spacing */
+    margin-bottom: 10px;
+  }
+
+  .client-profile {
+    flex: 1 1 35%; /* Flex basis set to 35% */
+    display: flex;
+    flex-direction: column; /* Stack image and text vertically */
+    align-items: center; /* Center align items */
+    padding-top: 10px;
+  }
+
+  .client-profile img {
+    width: 120px; /* Slightly larger for more prominence */
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #473E66; /* Darker purple border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for the image */
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .order-detail-container {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .order-info {
+      margin-right: 0; /* Remove right margin on smaller screens */
+      margin-bottom: 20px; /* Add bottom margin */
+    }
+
+    .client-profile {
+      padding-top: 0;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="order-detail-container">
+    <div class="order-info">
+        <h2>{{ order.title }}</h2>
+        <p><strong>Client:</strong> {{ order.client.email }}</p>
+        <p><strong>Description:</strong> {{ order.description }}</p><p><strong>Technology Stack:</strong>
+        {% for skill in order.skills.all %}
+            {{ skill.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+        <p><strong>Price:</strong> ${{ order.price }}</p>
+        <p><strong>Created At:</strong> {{ order.created_at|date:"F d, Y" }}</p>
+        {% if user.is_authenticated and user == order.client %}
+            <a href="{% url 'listings:order_update' slug=order.slug %}" class="btn">Edit Order</a>
+        {% endif %}
+        {% if user.is_authenticated and user.user_type == 'freelancer' %}
+            <a href="{% url 'chat:start_chat' username=order.client.username %}" class="chat-button">Chat with Client</a>
+        {% endif %}
+    </div>
+    {% if order.client.client_profile.profile_image %}
+        <div class="client-profile">
+            <img src="{{ order.client.client_profile.profile_image.url }}" alt="Client's Profile Picture">
+        </div>
+    {% else %}
+        <div class="client-profile">
+            <img src="{% static 'default-profile.png' %}" alt="Default Profile Picture">
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

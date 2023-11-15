@@ -2,65 +2,100 @@
 {% load static %}
 {% block title %}Home Page{% endblock title %}
 {% block page_specific_css %}
-<link rel="stylesheet" href="{% static 'css/index.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
 {% endblock page_specific_css %}
+
 {% block content %}
-<div class="hero">
-    <h2>Welcome to MyApp!</h2>
-    <p>Your one-stop solution for connecting freelancers and clients.</p>
-    <a href="{% url 'accounts:signup' %}" class="hero-button">Sign Up Today</a>
-</div>
-
-<section class="features">
-    <div class="feature">
-        <h3>Find Talent</h3>
-        <p>Access a pool of top freelancers ready to bring your projects to life.</p>
-        <a href="{% url 'accounts:freelancer-list' %}" class="feature-button">Browse Freelancers</a>
+    <!-- Hero Section for Different User Types -->
+    {% if not user.is_authenticated %}
+    <div class="hero" style="margin: 20px">
+        <h2>Welcome to MyApp!</h2>
+        <p>Your one-stop solution for connecting freelancers and clients.</p>
+        <a href="{% url 'accounts:signup' %}" class="hero-button">Sign Up Today</a>
     </div>
-    <div class="feature">
-        <h3>Get Projects</h3>
-        <p>As a freelancer, find projects that match your skills and expertise.</p>
-        <a href="{% url 'listings:orders_list' %}" class="feature-button">View Projects</a>
-    </div>
-</section>
 
-<section class="how-it-works">
-    <h2>How It Works</h2>
-    <div class="steps">
-        <div class="step">
-            <h3>Create An Account</h3>
-            <p>Sign up and choose your role as a freelancer or a client.</p>
+    {% elif user.user_type == 'client' %}
+    <div class="hero">
+        <h2>Welcome Client!</h2>
+        <p>Meet skilled freelancers ready to work on your projects.</p>
+        <a href="{% url 'accounts:freelancer-list' %}" class="hero-button">Hire Freelancers</a>
+    </div>
+    {% endif %}
+
+    <!-- Services Section -->
+{#    <section class="services">#}
+{#        <div class="service">#}
+{#            <h3>Efficient Project Management</h3>#}
+{#            <p>Streamline your workflow with our intuitive project management tools.</p>#}
+{#        </div>#}
+{#        <div class="service">#}
+{#            <h3>Quality Freelancers</h3>#}
+{#            <p>Access a diverse pool of talented professionals in various fields.</p>#}
+{#        </div>#}
+{#        <div class="service">#}
+{#            <h3>Secure Payments</h3>#}
+{#            <p>Enjoy safe and reliable transactions for each project milestone.</p>#}
+{#        </div>#}
+{#    </section>#}
+{##}
+{#    <!-- How It Works Section -->#}
+{#    <section class="how-it-works">#}
+{#        <h2>How It Works</h2>#}
+{#        <div class="steps">#}
+{#            <div class="step">#}
+{#                <h3>Create An Account</h3>#}
+{#                <p>Sign up as a freelancer or a client to start your journey with us.</p>#}
+{#            </div>#}
+{#            <div class="step">#}
+{#                <h3>Post or Apply for Projects</h3>#}
+{#                <p>Clients post detailed project briefs, while freelancers submit proposals.</p>#}
+{#            </div>#}
+{#            <div class="step">#}
+{#                <h3>Collaboration and Payment</h3>#}
+{#                <p>Work together efficiently and handle payments securely through our platform.</p>#}
+{#            </div>#}
+{#        </div>#}
+{#    </section>#}
+
+    {% if user.is_authenticated and user.user_type == 'freelancer' %}
+    <section class="matching-projects">
+        <h2>Projects Matching Your Skills</h2>
+        <div class="order-list">
+            {% for order in matching_orders %}
+                <a href="{% url 'listings:order_detail' slug=order.slug %}">
+                <div class="order">
+                    <h3>{{ order.title }}</h3>
+                    <p>{{ order.description }}</p>
+                    <!-- You can add more details about the order here -->
+                </div>
+                </a>
+            {% empty %}
+                <p>No matching projects found.</p>
+            {% endfor %}
         </div>
-        <div class="step">
-            <h3>Post or Bid on Projects</h3>
-            <p>Clients post projects, while freelancers bid with their proposals.</p>
-        </div>
-        <div class="step">
-            <h3>Collaborate and Grow</h3>
-            <p>Work together to complete projects and grow your business or portfolio.</p>
-        </div>
-    </div>
-</section>
+    </section>
+{% endif %}
 
-<section class="testimonials">
-    <h2>What Our Users Say</h2>
-    <div class="testimonial">
-        <blockquote>
-            "MyApp has been instrumental in helping me find the right talent for my projects. The process is simple and effective!"
-        </blockquote>
-        <p class="user">- Alex Smith, Entrepreneur</p>
-    </div>
-    <div class="testimonial">
-        <blockquote>
-            "I've grown my freelance business significantly since joining MyApp. Highly recommend it to any freelancer looking for quality gigs."
-        </blockquote>
-        <p class="user">- Samantha Doe, Freelance Designer</p>
-    </div>
-</section>
+    <!-- Testimonials Section -->
+        <section class="top-freelancers">
+        <h2>Top Freelancers</h2>
+        <div class="freelancer-list">
+            {% for freelancer in top_freelancers %}
+                <div class="freelancer">
+                    <h3>{{ freelancer.user.username }}</h3>
+                    <p>Rating: {{ freelancer.average_rating }}</p>
+                </div>
+            {% empty %}
+                <p>No freelancers available.</p>
+            {% endfor %}
+        </div>
+    </section>
 
-<section class="call-to-action">
-    <h2>Ready to get started?</h2>
-    <p>Join our community of professionals and start making your work more productive and enjoyable.</p>
-    <a href="{% url 'accounts:signup' %}" class="hero-button">Join Now</a>
-</section>
+    <!-- Call to Action Section -->
+{#    <section class="call-to-action">#}
+{#        <h2>Join Our Community</h2>#}
+{#        <p>Be a part of a thriving network of professionals. Enhance your career or business with MyApp.</p>#}
+{#        <a href="{% url 'accounts:signup' %}" class="hero-button">Get Started</a>#}
+{#    </section>#}
+
 {% endblock content %}

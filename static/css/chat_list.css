@@ -1,14 +1,14 @@
-.chat-page{
+.chat-page {
     max-width: 800px;
     margin: 20px 20px 20px 50px; /* 50px left margin */
     padding: 20px;
-    background: #f9f9f9;
+    background: #F5D7DB; /* Light pink background */
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .chat-page h1 {
-    color: #333;
+    color: #473E66; /* Dark purple for headings */
     font-size: 24px;
     text-align: center;
     margin-bottom: 30px;
@@ -24,7 +24,7 @@
 }
 
 .chat-list li {
-    background: white;
+    background: #FFFFFF; /* White for chat list items */
     padding: 15px 20px;
     border-radius: 8px;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -37,18 +37,18 @@
 
 .chat-list a {
     text-decoration: none;
-    color: #007bff;
+    color: #F1916D; /* Coral for links */
     font-weight: bold;
     display: block;
 }
 
 .chat-list a:hover {
-    color: #0056b3;
+    color: #BD83B8; /* Light purple on hover */
     text-decoration: underline;
 }
 
 /* Empty list item */
 .no-chats {
-    color: #888;
+    color: #888; /* Neutral grey for empty list message */
     text-align: center;
 }

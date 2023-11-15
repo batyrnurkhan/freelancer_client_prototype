@@ -4,7 +4,6 @@
 {% block page_specific_css %}
 <link rel="stylesheet" href="{% static 'css/chat_list.css' %}" />
 <style>
-
   .chat-list {
     list-style-type: none;
     padding-left: 0;
@@ -15,7 +14,7 @@
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 5px;
-    background-color: #f2f2f2;
+    background-color: #E8F4F2; /* Light background for chat items */
   }
   .chat-image-container {
     margin-right: 15px;
@@ -25,20 +24,24 @@
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
+    border: 2px solid #BD83B8; /* Light purple border */
   }
   .chat-info a {
     display: block;
-    color: #333;
+    color: #473E66; /* Dark purple for chat names */
     text-decoration: none;
   }
   .chat-info a:hover {
     text-decoration: underline;
+    color: #F1916D; /* Coral on hover */
   }
   .no-chats {
     text-align: center;
+    color: #06142E; /* Dark blue for no chat message */
   }
 </style>
 {% endblock page_specific_css %}
+
 
 {% block content %}
 <div class="chat-page">

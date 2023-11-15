@@ -8,6 +8,7 @@
 <div class="profile-container">
     <div class="profile-card">
         <div class="profile-header">
+            <!-- Profile Image -->
             {% if user.freelancer_profile.profile_image %}
                 <img class="profile-image" src="{{ user.freelancer_profile.profile_image.url }}" alt="Freelancer Profile Image">
             {% elif user.client_profile.profile_image %}
@@ -15,44 +16,69 @@
             {% else %}
                 <img class="profile-image" src="{% static 'img/images.png' %}" alt="Default Profile Image">
             {% endif %}
-        </div>
-<div class="profile-details">
-    <h1 class="profile-name">{{ user.get_full_name|default:user.username }}</h1>
-    <p class="profile-email"><strong>Email:</strong> {{ user.email }}</p>
-    <p class="profile-type"><strong>User Type:</strong> {{ user.get_user_type_display }}</p>
-    {% if user.user_type == "freelancer" and user.freelancer_profile %}
-        <p class="profile-portfolio"><strong>Portfolio:</strong> <a href="{{ user.freelancer_profile.portfolio }}">{{ user.freelancer_profile.portfolio }}</a></p>
-        <div class="profile-skills">
-            <strong>Skills:</strong>
-            <ul class="skills-list">
-                {% for skill in user.freelancer_profile.skills.all %}
-                    <li>{{ skill.name }}</li>
+            <!-- Skills list below the profile image -->
+            {% if user.user_type == "freelancer" %}
+                <div class="profile-skills">
+                    <strong>Skills:</strong>
+                    <ul class="skills-list">
+                        {% for skill in user.freelancer_profile.skills.all %}
+                            <li>{{ skill.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+         {% if user.user_type == "client" %}
+        <div class="client-orders">
+            <h3>Your Orders:</h3>
+            <ul class="orders-list">
+                {% for order in client_orders %}
+                    <li>
+                        <strong>Title:</strong> {{ order.title }}<br>
+                        <strong>Status:</strong> {{ order.get_status_display }}<br>
+                    </li>
+                {% empty %}
+                    <li>No orders found.</li>
                 {% endfor %}
             </ul>
         </div>
-    <p><strong>Average Rating:</strong> {{ user.freelancer_profile.average_rating }}</p>
-    <p><strong>Reviews:</strong></p>
-    {% if user.freelancer_profile.reviews %}
-    <div class="reviews">{{ user.freelancer_profile.reviews }}</div>
-    {% else %}
-    <div class="reviews">No reviews yet.</div>
     {% endif %}
-
-    {% elif user.user_type == "client" and user.client_profile %}
+            <div class="edit-profile-btn-container">
+                <a href="{% url 'accounts:edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
+            </div>
+        </div>
+        <div class="profile-details">
+            <p class="profile-type"><strong>User Type:</strong> {{ user.get_user_type_display }}</p>
+            {% if user.user_type == "freelancer" and user.freelancer_profile %}
+                <p class="profile-portfolio"><strong>Portfolio:</strong> <a href="{{ user.freelancer_profile.portfolio }}">{{ user.freelancer_profile.portfolio }}</a></p>
+                <p><strong>Average Rating:</strong> {{ user.freelancer_profile.average_rating }}</p>
+                <p><strong>Reviews:</strong></p>
+                {% if user.freelancer_profile.reviews %}
+                    <div class="reviews">{{ user.freelancer_profile.reviews }}</div>
+                {% else %}
+                    <div class="reviews">No reviews yet.</div>
+                {% endif %}
+            {% elif user.user_type == "client" and user.client_profile %}
                 <!-- Client specific fields -->
-                <p class="profile-company"><strong>Company Name:</strong> {{ user.client_profile.company_name }}</p>
-                <p class="profile-website"><strong>Website:</strong> <a href="{{ user.client_profile.company_website }}">{{ user.client_profile.company_website }}</a></p>
-                <p class="profile-contact-name"><strong>Contact Name:</strong> {{ user.client_profile.contact_name }}</p>
-                <p class="profile-contact-email"><strong>Contact Email:</strong> {{ user.client_profile.contact_email }}</p>
-                <p class="profile-contact-phone"><strong>Contact Phone:</strong> {{ user.client_profile.contact_phone }}</p>
-                <p class="profile-company-description"><strong>Company Description:</strong> {{ user.client_profile.company_description }}</p>
-                <p class="profile-industry"><strong>Industry:</strong> {{ user.client_profile.industry }}</p>
-                <p class="profile-preferred-communication"><strong>Preferred Communication:</strong> {{ user.client_profile.get_preferred_communication_display }}</p>
-                <p class="profile-additional-notes"><strong>Additional Notes:</strong> {{ user.client_profile.additional_notes }}</p>
-            {% else %}
-        <p class="profile-error">User type not specified or profile not found.</p>
-    {% endif %}
-    <a href="{% url 'accounts:edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
+                <div class="user-profile">
+    <h1 class="user-name">{{ user.first_name|default:user.username }} {{ user.last_name }}</h1>
+    <div class="user-details">
+        <p class="detail"><span class="label">Email:</span> {{ user.email }}</p>
+        <p class="detail"><span class="label">Company Name:</span> {{ user.client_profile.company_name }}</p>
+        <p class="detail"><span class="label">Website:</span> <a href="{{ user.client_profile.company_website }}" class="client-link">{{ user.client_profile.company_website }}</a></p>
+        <p class="detail"><span class="label">Contact Name:</span> {{ user.client_profile.contact_name }}</p>
+        <p class="detail"><span class="label">Contact Email:</span> {{ user.client_profile.contact_email }}</p>
+        <p class="detail"><span class="label">Contact Phone:</span> {{ user.client_profile.contact_phone }}</p>
+        <p class="detail"><span class="label">Company Description:</span> {{ user.client_profile.company_description }}</p>
+        <p class="detail"><span class="label">Industry:</span> {{ user.client_profile.industry }}</p>
+        <p class="detail"><span class="label">Preferred Communication:</span> {{ user.client_profile.get_preferred_communication_display }}</p>
+        <p class="detail"><span class="label">Additional Notes:</span> {{ user.client_profile.additional_notes }}</p>
+    </div>
 </div>
+
+            {% else %}
+                <p class="profile-error" style="margin-left: 5px"> User type not specified or profile not found.</p>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}

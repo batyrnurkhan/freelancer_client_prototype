@@ -45,13 +45,17 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+
     USER_TYPE_CHOICES = (
         ('freelancer', 'Freelancer'),
         ('client', 'Client'),
     )
+
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
     username = models.CharField(_('username'), max_length=150, unique=True)
     email = models.EmailField(_('email address'), unique=True)
+    first_name = models.CharField(_('first name'), max_length=30, blank=True)
+    last_name = models.CharField(_('last name'), max_length=30, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 

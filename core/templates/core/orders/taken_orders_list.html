@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block page_specific_css %}
+<!-- Your styles here -->
+{% endblock %}
+
+{% block content %}
+<div class="order-detail">
+  <h2>Taken Orders</h2>
+  <ul class="order-list">
+    {% for order in taken_orders %}
+      <li>
+        <a href="{% url 'listings:order_detail' slug=order.slug %}">
+          {{ order.title }}
+          <span class="status">Status: {{ order.get_status_display }}</span>
+        </a>
+      </li>
+    {% empty %}
+      <li>No taken orders.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

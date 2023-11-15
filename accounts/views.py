@@ -6,6 +6,8 @@ from .models import Profile, FreelancerProfile, ClientProfile, Skill
 from .forms import CustomUserCreationForm, ProfileForm, FreelancerProfileForm, ClientProfileForm
 from django.db import transaction
 from listings.models import Order
+from django.db.models import Count, Q
+
 
 class SignUpView(generic.CreateView):
     form_class = CustomUserCreationForm
@@ -35,7 +37,7 @@ class SignInView(LoginView):
 from django.shortcuts import get_object_or_404
 class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
     template_name = 'core/edit_profile.html'
-    success_url = reverse_lazy('profile_detail')  # Make sure this is the correct URL name for your profile detail view
+    success_url = reverse_lazy('profile_detail')
 
     def get_form_class(self):
         if self.request.user.user_type == 'freelancer':
@@ -74,6 +76,15 @@ class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_success_url(self):
         return reverse_lazy('accounts:edit_profile')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Add client's orders to context if user is a client
+        if self.request.user.user_type == 'client':
+            context['client_orders'] = Order.objects.filter(client=self.request.user).order_by('-created_at')
+
+        return context
 
 
 from django.views.generic import ListView
