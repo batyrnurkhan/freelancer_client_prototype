@@ -47,8 +47,10 @@
             </div>
         </div>
         <div class="profile-details">
-            <p class="profile-type"><strong>User Type:</strong> {{ user.get_user_type_display }}</p>
+
             {% if user.user_type == "freelancer" and user.freelancer_profile %}
+                <h1 class="user-name">{{ user.first_name|default:user.username }} {{ user.last_name }}</h1>
+                <p class="profile-type"><strong></strong> {{ user.freelancer_profile }}</p>
                 <p class="profile-portfolio"><strong>Portfolio:</strong> <a href="{{ user.freelancer_profile.portfolio }}">{{ user.freelancer_profile.portfolio }}</a></p>
                 <p><strong>Average Rating:</strong> {{ user.freelancer_profile.average_rating }}</p>
                 <p><strong>Reviews:</strong></p>
