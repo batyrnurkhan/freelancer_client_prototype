@@ -1,7 +1,96 @@
 {% extends 'core/base.html' %}
-{% load static%}
+{% load static %}
 {% block page_specific_css %}
-    <link rel="stylesheet" href="{% static 'css/signup.css' %}" />
+<style>
+    /* General Styles for Signup Form */
+    .signup-form {
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 20px;
+        border: 1px solid #d3d3d3; /* Light gray border */
+        border-radius: 8px;
+        background-color: #f8f8f8; /* Very light gray background */
+    }
+
+    .signup-form h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333; /* Dark gray for heading */
+    }
+
+    .signup-form form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .signup-form form p {
+        margin-bottom: 10px;
+    }
+
+    .signup-form input[type='text'],
+    .signup-form input[type='email'],
+    .signup-form input[type='password'] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #d3d3d3; /* Light gray border */
+        border-radius: 4px;
+        background-color: #fff; /* White background */
+    }
+
+    .signup-form button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        background-color: #4CAF50; /* Green background */
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .signup-form button:hover {
+        background-color: #45a049; /* Darker green on hover */
+    }
+
+     .signup-form select {
+        width: calc(100% - 20px); /* Match width with other inputs */
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #d3d3d3; /* Consistent border with other inputs */
+        border-radius: 4px;
+        background-color: #fff;
+        color: #333;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url('core/templates/core/arrow.png');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        height: 40px; /* Set a specific height if necessary */
+        line-height: 1.2; /* Adjust line height if needed for better text alignment */
+    }
+
+    .signup-form select:focus {
+        border-color: #4CAF50; /* Change border color on focus */
+        outline: none; /* Remove default focus outline */
+    }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .signup-form {
+            width: 90%;
+            padding: 15px;
+        }
+
+        .signup-form h2 {
+            font-size: 1.5rem;
+        }
+
+        .signup-form button {
+            font-size: 14px;
+        }
+    }
+</style>
 {% endblock page_specific_css %}
 
 {% block content %}

@@ -16,6 +16,9 @@ class Chat(models.Model):
     def __str__(self):
         return "{}".format(self.pk)
 
+    def get_other_participant(self, current_user):
+        return self.participants.exclude(id=current_user.id).first()
+
 class Message(models.Model):
     chat = models.ForeignKey(Chat, related_name='messages', on_delete=models.CASCADE)
     author = models.ForeignKey(CustomUser, related_name='messages', on_delete=models.CASCADE)

@@ -3,59 +3,59 @@
 {% block page_specific_css %}
 <style>
   body {
-    background-color: #F5D7DB; /* Light pink background */
+    background-color: #f7f9fc; /* Light grey background, similar to the hero section */
     font-family: 'Arial', sans-serif;
   }
+
   .order-detail-container {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* Align items to start for better visual alignment */
-    flex-wrap: wrap; /* Ensure responsiveness */
+    align-items: flex-start;
+    flex-wrap: wrap;
     max-width: 800px;
-    margin: 50px auto; /* Increased margin for more space */
+    margin: 50px auto;
     padding: 25px;
     background: #FFFFFF; /* White background */
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); /* More pronounced shadow for depth */
-    border: 2px solid #BD83B8; /* Thicker light purple border */
+    border-radius: 8px; /* Rounded corners like the order card */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow like the order card */
+    border: 1px solid #ddd; /* Light grey border, similar to order card */
   }
 
   .order-info {
-    flex: 1 1 60%; /* Flex basis set to 60% */
-    margin-right: 20px; /* Added right margin */
+    flex: 1 1 60%;
+    margin-right: 20px;
   }
 
   .order-info h2 {
-    color: #473E66; /* Dark purple for heading */
+    color: #2c3e50; /* Dark blue for heading, like the hero section */
     margin-bottom: 15px;
-    font-size: 1.8rem; /* Larger font size for heading */
+    font-size: 1.8rem;
   }
 
   .order-info p {
     font-size: 1rem;
-    color: #06142E; /* Dark blue text */
-    line-height: 1.5; /* Improved line spacing */
+    color: #4a4a4a; /* Grey text, like the hero section */
+    line-height: 1.5;
     margin-bottom: 10px;
   }
 
   .client-profile {
-    flex: 1 1 35%; /* Flex basis set to 35% */
+    flex: 1 1 35%;
     display: flex;
-    flex-direction: column; /* Stack image and text vertically */
-    align-items: center; /* Center align items */
+    flex-direction: column;
+    align-items: center;
     padding-top: 10px;
   }
 
   .client-profile img {
-    width: 120px; /* Slightly larger for more prominence */
+    width: 120px;
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #473E66; /* Darker purple border */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for the image */
+    border: 3px solid #473E66; /* Optional: Dark purple border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  /* Responsive adjustments */
   @media (max-width: 768px) {
     .order-detail-container {
       flex-direction: column;
@@ -63,8 +63,8 @@
     }
 
     .order-info {
-      margin-right: 0; /* Remove right margin on smaller screens */
-      margin-bottom: 20px; /* Add bottom margin */
+      margin-right: 0;
+      margin-bottom: 20px;
     }
 
     .client-profile {

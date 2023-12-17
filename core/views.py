@@ -7,15 +7,20 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['top_freelancers'] = FreelancerProfile.objects.order_by('-average_rating')[:3]
 
-        if self.request.user.is_authenticated and hasattr(self.request.user, 'freelancer_profile'):
-            freelancer_skills = self.request.user.freelancer_profile.skills.all()
-            matching_orders = Order.objects.filter(skills__in=freelancer_skills).distinct()
-            context['matching_orders'] = matching_orders
+        # Check if the user is a freelancer and logged in
+        if self.request.user.is_authenticated and self.request.user.user_type == 'freelancer':
+            try:
+                freelancer_profile = FreelancerProfile.objects.get(user=self.request.user)
+                freelancer_skills = freelancer_profile.skills.all()
+                matching_orders = Order.objects.filter(skills__in=freelancer_skills, status='open').distinct()[:3]
+                context['matching_orders'] = matching_orders
+            except FreelancerProfile.DoesNotExist:
+                context['matching_orders'] = []
 
         return context
 
 
 def custom_404_view(request, exception):
     return render(request, '404.html', {}, status=404)
+

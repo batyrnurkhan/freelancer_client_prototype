@@ -1,4 +1,4 @@
-{% extends 'core/base.html' %}
+
 {% load static %}
 {% block content %}
 <div class="chat-room">
@@ -6,39 +6,52 @@
 
     <div class="chat-log" id="chat-log">
         {% for message in messages %}
-            <div class="message{% if message.author == request.user %} message-self{% endif %}">
-                {% if message.author.user_type == 'freelancer' %}
-                    {% with message.author.freelancer_profile as profile %}
-                        {% if profile.profile_image %}
-                            <img class="message-profile-image" src="{{ profile.profile_image.url }}" alt="{{ message.author.username }}">
-                        {% else %}
-                            <img class="message-profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Profile Image">
-                        {% endif %}
-                    {% endwith %}
-                {% elif message.author.user_type == 'client' %}
-                    {% with message.author.client_profile as profile %}
-                        {% if profile.profile_image %}
-                            <img class="message-profile-image" src="{{ profile.profile_image.url }}" alt="{{ message.author.username }}">
-                        {% else %}
-                            <img class="message-profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Profile Image">
-                        {% endif %}
-                    {% endwith %}
-                {% endif %}
-                <div class="message-content">
-                    <strong>{{ message.author.username }}:</strong>
-                    <span>{{ message.content }}</span>
-                </div>
+        <div class="message{% if message.author == request.user %} message-self{% endif %}">
+            {% if message.author.user_type == 'freelancer' %}
+            {% with message.author.freelancer_profile as profile %}
+            {% if profile.profile_image %}
+            <img class="message-profile-image" src="{{ profile.profile_image.url }}" alt="{{ message.author.username }}">
+            {% else %}
+            <img class="message-profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Profile Image">
+            {% endif %}
+            {% endwith %}
+            {% elif message.author.user_type == 'client' %}
+            {% with message.author.client_profile as profile %}
+            {% if profile.profile_image %}
+            <img class="message-profile-image" src="{{ profile.profile_image.url }}" alt="{{ message.author.username }}">
+            {% else %}
+            <img class="message-profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Profile Image">
+            {% endif %}
+            {% endwith %}
+            {% endif %}
+            <div class="message-content">
+                <strong>{{ message.author.username }}:</strong>
+                <span>{{ message.content }}</span>
             </div>
+        </div>
         {% empty %}
-            <p class="no-messages">No messages in this chat yet.</p>
+        <p class="no-messages">No messages in this chat yet.</p>
         {% endfor %}
     </div>
 
-
     <div class="message-input">
-        <input type="text" id="chat-message-input" placeholder="Type your message here...">
-        <button id="chat-message-submit">Send</button>
+        <form action="{% url 'chat:send_message' chat.id %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="content" id="chat-message-input" placeholder="Type your message here..." required>
+            <button type="submit" id="send-message-button">Send</button>
+        </form>
     </div>
+</div>
+    <script>
+    window.onload = function() {
+        var chatLog = document.getElementById("chat-log");
+        chatLog.scrollTop = chatLog.scrollHeight;
+    };
+</script>
+{#    <div class="message-input">#}
+{#        <input type="text" id="chat-message-input" placeholder="Type your message here...">#}
+{#        <button id="chat-message-submit">Send</button>#}
+{#    </div>#}
 
 <script>
 // Ensuring that the DOM has fully loaded before running our script
@@ -100,71 +113,85 @@ document.addEventListener('DOMContentLoaded', function() {
 {% block page_specific_css %}
 <style>
     .chat-room {
-        max-width: 600px;
-        margin: 20px auto;
+        max-width: 800px;
+        margin: auto;
         padding: 20px;
-        border: 1px solid #BD83B8; /* Light purple border */
         border-radius: 4px;
-        background-color: #F5D7DB; /* Light pink background */
+        background-color: #FFFFFF; /* White background for chat room */
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     }
+
     .chat-log {
-        max-height: 400px;
+        max-height: 500px;
         overflow-y: auto;
         margin-bottom: 20px;
         padding: 10px;
-        background-color: #FFFFFF; /* White background */
-        border: 1px solid #473E66; /* Dark purple border */
+        background-color: #f9f9f9; /* Light grey background */
+        border-radius: 8px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
     }
+
     .message {
         display: flex;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
     }
+
     .message-self {
-        justify-content: flex-end;
+        flex-direction: row-reverse;
+        text-align: right;
     }
+
     .message-profile-image {
-        width: 40px;
-        height: 40px;
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
-        margin-right: 10px;
+        margin: 0 10px;
         object-fit: cover;
-        border: 2px solid #473E66; /* Dark purple border */
+        border: 2px solid #6c757d; /* Dark grey border */
     }
+
     .message-content {
-        background-color: #473E66; /* Light background */
-        color: #F5D7DB;
-        padding: 10px;
-        border-radius: 10px;
+        padding: 12px;
+        border-radius: 15px;
+        background-color: #e2e2e2; /* Light grey for message background */
+        color: #333;
+        max-width: 70%;
     }
+
     .message-self .message-content {
-        background-color: #BD83B8; /* Light purple background for own messages */
+        background-color: #a1cdf1; /* Soft blue for own messages */
     }
+
     .no-messages {
         text-align: center;
-        color: #06142E; /* Dark blue text */
+        color: #6c757d; /* Dark grey for 'no messages' text */
     }
+
     .message-input {
         display: flex;
-        margin-top: 20px;
     }
+
     #chat-message-input {
         flex-grow: 1;
-        border: 1px solid #BD83B8; /* Light purple border */
-        border-radius: 4px;
         padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ced4da; /* Grey border */
         margin-right: 10px;
     }
-    #chat-message-submit {
+
+    #send-message-button {
         padding: 10px 20px;
-        background-color: #F1916D; /* Coral for button */
+        background-color: #007bff; /* Bootstrap primary blue */
         color: white;
         border: none;
         border-radius: 4px;
         cursor: pointer;
+        transition: background-color 0.2s;
     }
-    #chat-message-submit:hover {
-        background-color: #BD83B8; /* Light purple on hover */
+
+    #send-message-button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
     }
 </style>
 {% endblock %}

@@ -1,7 +1,76 @@
 {% extends "core/base.html" %}
 {% load static%}
 {% block page_specific_css %}
-    <link rel="stylesheet" href="{% static 'css/signin.css' %}" />
+    <style>
+/* Sign In Form Styles */
+.sign-in-container {
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 20px;
+        border: 1px solid #A3B1C6; /* Soft blue border */
+        border-radius: 5px;
+        background-color: #E3EAF3; /* Light blue-gray background */
+    }
+
+    .sign-in-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #2F4F4F; /* Dark slate gray for heading */
+    }
+
+.sign-in-container form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sign-in-container form p {
+        color: #333333; /* Dark color for paragraph text */
+        margin-bottom: 10px;
+    }
+
+    .sign-in-container input[type='text'],
+    .sign-in-container input[type='password'] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #A3B1C6; /* Soft blue border */
+        border-radius: 4px;
+        background-color: #FFFFFF; /* White background for input fields */
+        color: #333333; /* Dark text color for input fields */
+    }
+
+.sign-in-container button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #5B8DB8; /* Medium blue for buttons */
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .sign-in-container button:hover {
+        background-color: #3C6E71; /* Teal blue on hover */
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .sign-in-container {
+            width: 90%;
+            padding: 15px;
+        }
+
+        .sign-in-container h2 {
+            font-size: 1.5rem;
+        }
+
+        .sign-in-container button {
+            font-size: 14px;
+        }
+    }
+
+    </style>
 {% endblock page_specific_css %}
 {% block content %}
 <div class="sign-in-container">

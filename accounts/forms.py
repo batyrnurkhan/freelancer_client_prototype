@@ -33,7 +33,7 @@ class FreelancerProfileForm(forms.ModelForm):
 
     class Meta:
         model = FreelancerProfile
-        fields = ['first_name', 'last_name', 'skills', 'portfolio', 'profile_image']
+        fields = ['first_name', 'last_name', 'skills', 'skill_desc', 'portfolio', 'profile_image', 'video']  # Include 'skill_desc' here
 
 from .models import Rating
 
@@ -62,3 +62,9 @@ class ClientProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ClientProfileForm, self).__init__(*args, **kwargs)
+
+
+from django import forms
+
+class SearchForm(forms.Form):
+    query = forms.CharField(label='Search for freelancers')

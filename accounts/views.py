@@ -7,7 +7,8 @@ from .forms import CustomUserCreationForm, ProfileForm, FreelancerProfileForm, C
 from django.db import transaction
 from listings.models import Order
 from django.db.models import Count, Q
-
+from django.core.mail import send_mail
+from django.conf import settings
 
 class SignUpView(generic.CreateView):
     form_class = CustomUserCreationForm
@@ -27,7 +28,17 @@ class SignUpView(generic.CreateView):
                 # Handle other cases or raise an error
                 print("User type is not set or profile already exists for the user: {}".format(user.email))
 
+            # Send activation email
+            self.send_activation_email(user)
+
         return super(SignUpView, self).form_valid(form)
+
+    def send_activation_email(self, user):
+        token = user.activation_token
+        activation_link = f"{self.request.build_absolute_uri('/')[:-1]}{reverse_lazy('accounts:activate', args=[token])}"
+        subject = "Activate your account"
+        message = f"Hi {user.username}, Please click the following link to activate your account: {activation_link}"
+        send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email])
 
 
 class SignInView(LoginView):
@@ -98,26 +109,29 @@ class FreelancerListView(ListView):
 
     def get_queryset(self):
         queryset = CustomUser.objects.get_freelancers()
-        skill_filter = self.request.GET.getlist('skill')  # Get the list of selected skills
         search_query = self.request.GET.get('search')
+        skill_filter = self.request.GET.getlist('skill')
 
-        # Filter freelancers by search query
+        # Check for the search query
         if search_query:
             queryset = queryset.filter(
                 Q(username__icontains=search_query) |
-                Q(email__icontains=search_query)
+                Q(email__icontains=search_query) |
+                Q(freelancer_profile__skill_desc__icontains=search_query)  # Filter by skill description
             )
 
-        # Filter freelancers who have all the selected skills
-        for skill_name in skill_filter:
-            queryset = queryset.filter(freelancer_profile__skills__name=skill_name)
+        # Filter by selected skills
+        if skill_filter:
+            queryset = queryset.filter(
+                freelancer_profile__skills__name__in=skill_filter
+            ).distinct()
 
         return queryset.distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['selected_skills'] = self.request.GET.getlist('skill')
         context['skills'] = Skill.objects.all()
-        context['selected_skills'] = self.request.GET.getlist('skill')  # Pass the selected skills to the context
         return context
 
 class FreelancerDetailView(LoginRequiredMixin, generic.DetailView):
@@ -130,7 +144,7 @@ class FreelancerDetailView(LoginRequiredMixin, generic.DetailView):
 
 class ClientListView(LoginRequiredMixin, ListView):
     model = CustomUser  # Update this if you have a specific Client model
-    template_name = 'core/clients_list.html'
+    template_name = 'core/not usage pages/clients_list.html'
     context_object_name = 'clients'
 
     def get_queryset(self):
@@ -138,7 +152,7 @@ class ClientListView(LoginRequiredMixin, ListView):
 
 class ClientDetailView(LoginRequiredMixin, generic.DetailView):
     model = ClientProfile  # Update this if you have a specific Client model
-    template_name = 'core/client_detail.html'
+    template_name = 'core/not usage pages/client_detail.html'
     context_object_name = 'client'
 
     def get_object(self):
@@ -175,3 +189,47 @@ class LogoutView(LogoutView):
         # Here you can add any additional logic you want to perform during logout
         # For example, you can add a message to the user
         return super().dispatch(request, *args, **kwargs)
+
+
+from django.shortcuts import redirect
+from django.http import HttpResponse
+from django.contrib import messages
+def activate_account(request, token):
+    try:
+        user = CustomUser.objects.get(activation_token=token)
+        if user.email_verified:
+            messages.info(request, "Your account is already activated. Please log in.")
+        else:
+            user.email_verified = True
+            user.activation_token = ''
+            user.save()
+            messages.success(request, "Your account has been activated. Please log in.")
+        return redirect('accounts:signin')  # Replace 'accounts:signin' with the name of your login URL
+    except CustomUser.DoesNotExist:
+        messages.error(request, "Activation link is invalid!")
+        return redirect('accounts:signin')  # Same here
+
+
+from django.shortcuts import render
+from django.db import models
+from .forms import SearchForm
+from .models import FreelancerProfile
+
+
+def search_freelancers(request):
+    form = SearchForm(request.GET)
+    freelancers = FreelancerProfile.objects.all()
+
+    if form.is_valid():
+        query = form.cleaned_data['query']
+
+        # Filter freelancers based on skills and other profile attributes
+        freelancers = freelancers.filter(
+            models.Q(skills__name__icontains=query) |
+            models.Q(user__username__icontains=query) |
+            models.Q(skill_desc__icontains=query) |
+            models.Q(portfolio__icontains=query) |
+            models.Q(reviews__icontains=query)
+        ).distinct()
+
+    return render(request, 'core/freelancer_search_results.html', {'form': form, 'freelancers': freelancers})

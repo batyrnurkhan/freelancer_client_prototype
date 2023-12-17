@@ -1,7 +1,154 @@
 {% extends 'core/base.html' %}
 {% load static%}
 {% block page_specific_css %}
-<link rel="stylesheet" href="{% static 'css/edit_profile.css' %}" />
+<style>
+.edit-profile-container {
+    margin: 40px auto;
+    padding: 30px;
+    border: 1px solid #eaecef;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    width: 50%;
+    max-width: 800px;
+}
+
+.edit-profile-container h2 {
+    color: #495057;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.form-group .form-text.text-muted {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.form-group .form-text.text-danger {
+    color: #f44336;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.file-input-container {
+    margin-bottom: 20px;
+  }
+
+  .file-input-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #6c757d;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .file-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+  }
+
+  .file-input:hover {
+    background-color: #e9ecef;
+  }
+
+  /* Placeholder for the file input */
+  .file-input::placeholder {
+    color: #6c757d;
+    font-style: italic;
+  }
+
+  /* Custom styles for file input (optional) */
+  .custom-file-input {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+  }
+
+  .custom-file-label {
+        display: block;
+        background-color: #f8f9fa;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .custom-file-label::after {
+        content: "Choose file";
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-left: 10px;
+    }
+
+  .custom-file-container {
+        margin-bottom: 20px;
+    }
+
+    .custom-file-input {
+        display: none; /* Hide the default file input */
+    }
+
+ .custom-file-upload {
+        border: 1px solid #ccc;
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+    }
+
+</style>
 {% endblock page_specific_css %}
 
 {% block content %}
@@ -10,18 +157,32 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% for field in form %}
-        <div class="form-group">
-            {{ field.label_tag }}
-            {{ field }}
-            {% if field.help_text %}
-            <small class="form-text text-muted">{{ field.help_text }}</small>
-            {% endif %}
-            {% for error in field.errors %}
-            <small class="form-text text-danger">{{ error }}</small>
-            {% endfor %}
-        </div>
+            <div class="form-group">
+                {{ field.label_tag }}
+                {% if field.field.widget.input_type == 'file' %}
+                    <!-- Custom file upload button -->
+                    <label for="{{ field.id_for_label }}" class="custom-file-upload">
+                        Choose file
+                    </label>
+                    <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}" style="display: none;">
+                    {% if field.value %}
+                        <!-- Display the file name if it exists -->
+                        <span class="file-name">
+                            {{ field.value.name }}
+                        </span>
+                    {% endif %}
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <small class="form-text text-danger">{{ error }}</small>
+                {% endfor %}
+            </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 </div>
 {% endblock %}

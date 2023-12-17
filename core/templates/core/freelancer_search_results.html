@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}  <!-- Replace with your actual base template name -->
+
+{% block content %}
+    <h2>Search Results</h2>
+    <form method="get" action="{% url 'accounts:search_freelancers' %}">
+        {{ form.as_p }}
+        <button type="submit">Search</button>
+    </form>
+
+    {% for freelancer in freelancers %}
+        <div>
+            <h3>{{ freelancer.user.username }}</h3>
+            <p>{{ freelancer.skill_desc }}</p>
+            <!-- You can add more details to display for each freelancer here -->
+        </div>
+    {% empty %}
+        <p>No freelancers found matching your search criteria.</p>
+    {% endfor %}
+{% endblock %}

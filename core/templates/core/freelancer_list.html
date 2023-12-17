@@ -1,51 +1,354 @@
-  {% extends 'core/base.html' %}
-  {% load static%}
+{% extends 'core/base.html' %}
+{% load static %}
+
 {% block page_specific_css %}
-<link rel="stylesheet" href="{% static 'css/freelancers_list.css' %}" />
+<style>
+  /* Base Container */
+  .freelancers-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto; /* Centering the container */
+      background: #fff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 10px;
+  }
+
+  /* Left Side: Filters */
+  .left-side {
+      flex: 1 1 300px; /* Flex basis of 300px and allowed to grow or shrink */
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+  }
+
+  /* Search Bar Styling */
+  .search-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center; /* Align items vertically */
+    background: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-bar .search-input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 2px solid #5cb85c; /* Green border to match the button */
+    border-radius: 5px;
+    outline: none; /* Remove the default focus outline */
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+
+  .search-bar .search-input:focus {
+    border-color: #4cae4c; /* Darker green when the input is focused */
+    box-shadow: 0 0 0 3px rgba(92, 184, 92, 0.3); /* Glow effect */
+  }
+
+  .search-bar .search-button {
+    padding: 10px 20px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s ease-in-out;
+  }
+
+  .search-bar .search-button:hover {
+    background-color: #4cae4c;
+    transform: scale(1.05); /* Slightly enlarge the button when hovered */
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .search-bar {
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .search-bar .search-button {
+      width: 100%; /* Full width on small screens */
+      padding: 15px;
+    }
+  }
+
+  /* Skill Selection Styling */
+  .skill-selection .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: #f2f2f2;
+      padding: 10px;
+      border-radius: 5px;
+  }
+
+  .skill-label {
+      background: #e9ecef;
+      border-radius: 15px;
+      padding: 5px 15px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #495057;
+      transition: background-color 0.3s ease;
+  }
+
+  .skill-label:hover {
+      background-color: #dee2e6;
+  }
+
+  .skill-label input[type="checkbox"] {
+      margin-right: 8px;
+  }
+
+  .skill-label input[type="checkbox"]:checked + span {
+      color: #5cb85c;
+  }
+
+  /* Selected Skills Display Styling */
+  .selected-skills-display {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      min-height: 40px;
+      align-items: center; /* Align chips vertically */
+  }
+
+  .skill-chip {
+      display: flex;
+      align-items: center;
+      background-color: #5cb85c;
+      color: white;
+      border-radius: 15px;
+      padding: 5px 10px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  }
+
+  .skill-chip:hover {
+      background-color: #4cae4c;
+  }
+
+  .skill-chip .remove-skill {
+      display: inline-block;
+      padding-left: 8px;
+      font-weight: bold;
+  }
+
+  /* Freelancer List Styling */
+  .freelancer-list-ul {
+      width: 100%;
+      list-style: none;
+      padding: 0;
+  }
+
+  .freelancer-list-item {
+      background: #ffffff;
+      border: 1px solid #e1e1e1;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      margin-bottom: 20px;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      overflow: hidden; /* Ensures that child elements do not overflow the border radius */
+  }
+
+  .freelancer-list-item:hover {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transform: translateY(-5px);
+  }
+
+  .freelancer-link {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+  }
+
+  .profile-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #f7f7f7;
+      margin-right: 20px;
+  }
+
+  .freelancer-info {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+  }
+
+  .freelancer-info strong {
+      font-size: 1.5em;
+      color: #333;
+      margin-bottom: 5px;
+  }
+
+  .freelancer-info div {
+      font-size: 0.9em;
+      color: #666;
+  }
+
+  .freelancer-info .skills {
+      background: #eff4f7;
+      border-radius: 3px;
+      display: inline-block;
+      padding: 5px 10px;
+      margin-right: 5px;
+      font-size: 0.8em;
+      color: #555;
+  }
+
+  @media (max-width: 768px) {
+      .freelancers-container {
+          flex-direction: column;
+      }
+
+      .freelancer-info {
+          flex-direction: column;
+          align-items: flex-start;
+      }
+
+      .freelancer-list-item {
+          margin-bottom: 15px;
+      }
+  }
+
+  .search-bar-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+.search-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+ .search-bar .search-input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 2px solid #5cb85c;
+    border-radius: 5px;
+    outline: none;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+ .search-bar .search-input:focus {
+    border-color: #4cae4c;
+    box-shadow: 0 0 0 3px rgba(92, 184, 92, 0.3);
+  }
+.search-bar .search-button {
+    padding: 10px 20px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s ease-in-out;
+  }
+
+  .search-bar .search-button:hover {
+    background-color: #4cae4c;
+    transform: scale(1.05);
+  }
+  @media (max-width: 768px) {
+    .search-bar {
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .search-bar .search-button {
+      width: 100%;
+      padding: 15px;
+    }
+  }
+</style>
 {% endblock %}
 
-  {% block content %}
-    <div class="freelancers-container">
-      <h2>Freelancers</h2>
+{% block content %}
 
-      <div class="search-container">
-        <form method="get" action="{% url 'accounts:freelancer-list' %}" class="search-form">
-          <input type="text" name="search" placeholder="Search by username or email" value="{{ request.GET.search }}" aria-label="Search freelancers">
-          <select id="skillSelect" name="skill" multiple="multiple" class="skill-multi-select">
-            {% for skill in skills %}
-              <option value="{{ skill.name }}" {% if skill.name in selected_skills %}selected{% endif %}>
-                {{ skill.name }}
-              </option>
-            {% endfor %}
-          </select>
-          <button type="submit">Search</button>
+
+<div class="freelancers-container">
+
+    <div class="left-side">
+        <!-- Combined Search and Skill Filter Form -->
+        <form method="get" action="{% url 'accounts:freelancer-list' %}">
+                <div class="search-bar-container">
+        <form method="get" action="{% url 'accounts:freelancer-list' %}">
+            <div class="search-bar">
+                <input type="text" name="search" placeholder="Search freelancers" value="{{ request.GET.search }}" class="search-input">
+                <button type="submit" class="search-button">Search</button>
+            </div>
         </form>
-      </div>
-
-      <ul class="freelancer-list-ul">
-        {% for user in freelancers %}
-        <li class="freelancer-list-item">
-          <a href="{% url 'accounts:freelancer_detail' pk=user.freelancer_profile.pk %}" class="freelancer-link">
-            <div class="freelancer-info">
-              <img class="profile-image" src="{{ freelancer.profile_image.url }}" alt="Freelancer Profile Image">
-            <strong>{{ user.username }} </strong>
-            <div>{{ user.email }}</div>
-            <div>Skills: {{ user.freelancer_profile.skills.all|join:", " }}</div>
-          </div>
-        </a>
-      </li>
-  {% endfor %}
-      </ul>
     </div>
 
-    {% block extra_js %}
-    <script>
-      $(document).ready(function() {
-          $('#skillSelect').select2({
-              placeholder: "Select skills",
-              allowClear: true
-          });
-      });
-    </script>
-    {% endblock %}
-  {% endblock %}
+            <div class="skill-selection">
+                <div class="skills-list">
+                    {% for skill in skills %}
+                    <label class="skill-label">
+                        <input type="checkbox" class="skill-checkbox" name="skill" value="{{ skill.name }}" id="skill-{{ skill.id }}"
+                        {% if skill.name in selected_skills %}checked{% endif %}>
+                        <span>{{ skill.name }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                <div id="selected-skills-display" class="selected-skills-display">
+                    <!-- Display selected skills -->
+                    {% for skill in selected_skills %}
+                    <div class="skill-chip">
+                        {{ skill }} <a href="#" class="remove-skill" data-skill="{{ skill }}">×</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Freelancer List -->
+    <ul class="freelancer-list-ul">
+        {% for user in freelancers %}
+        <li class="freelancer-list-item">
+            <div class="freelancer-info">
+                <a href="{% url 'accounts:freelancer_detail' pk=user.freelancer_profile.pk %}" class="freelancer-link">
+                    {% if user.freelancer_profile.profile_image %}
+                        <img class="profile-image" src="{{ user.freelancer_profile.profile_image.url }}" alt="{{ user.username }}'s Profile Image">
+                    {% else %}
+                        <img class="profile-image" src="{% static 'img/default_profile.png' %}" alt="Default Profile Image">
+                    {% endif %}
+                    <div>
+                        <strong>{{ user.username }}</strong>
+                        <div>{{ user.email }}</div>
+                        <div class="skills">
+                            Skills:
+                            {% for skill in user.freelancer_profile.skills.all %}
+                                <span class="skill-tag">{{ skill.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

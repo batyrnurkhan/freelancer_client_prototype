@@ -1,6 +1,10 @@
 from django.urls import path
-from .views import SignUpView, SignInView, ProfileUpdateView, ProfileDetailView, FreelancerListView, LogoutView, FreelancerDetailView,ClientListView, ClientDetailView
+from .views import SignUpView, SignInView, ProfileUpdateView, ProfileDetailView, FreelancerListView, LogoutView, \
+    FreelancerDetailView, ClientListView, ClientDetailView, activate_account
 from django.contrib.auth import views as auth_views
+from django.urls import path
+from .views import search_freelancers
+
 app_name = 'accounts'
 
 urlpatterns = [
@@ -13,6 +17,7 @@ urlpatterns = [
     path('freelancers/<int:pk>/', FreelancerDetailView.as_view(), name='freelancer_detail'),
     path('clients/', ClientListView.as_view(), name='client-list'),
     path('clients/<int:pk>/', ClientDetailView.as_view(), name='client_detail'),
-
+    path('activate/<str:token>/', activate_account, name='activate'),
+    path('search/', search_freelancers, name='search_freelancers'),
 
 ]

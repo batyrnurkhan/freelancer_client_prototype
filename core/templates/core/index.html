@@ -1,19 +1,135 @@
 {% extends 'core/base.html' %}
 {% load static %}
 {% block title %}Home Page{% endblock title %}
+
 {% block page_specific_css %}
-    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+    <style>
+    .matching-orders-container {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.matching-orders-title {
+    color: #333;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.orders-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.order-card {
+    flex-basis: 30%;
+    margin: 10px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.order-title {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.order-description {
+    color: #555;
+}
+
+.no-orders-message {
+    text-align: center;
+    color: #888;
+}
+.order-card-link {
+    text-decoration: none;
+    color: inherit; /* Keeps the text color as defined in .order-title and .order-description */
+}
+
+.order-card-link:hover .order-card {
+    border-color: #007bff; /* Changes border color on hover for visual feedback */
+    cursor: pointer;
+}
+
+        /* General Styles */
+        .hero, .top-freelancers {
+            text-align: center;
+            padding: 40px;
+            margin: 20px;
+            background-color: #f7f9fc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .hero h2, .top-freelancers h2 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .hero p, .top-freelancers p {
+            color: #4a4a4a;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .hero-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .hero-button:hover {
+            background-color: #43a047;
+            transform: translateY(-3px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Top Freelancers Styles */
+        .freelancer-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .freelancer {
+            margin: 10px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .freelancer:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Additional styles for other sections */
+    </style>
 {% endblock page_specific_css %}
 
 {% block content %}
     <!-- Hero Section for Different User Types -->
     {% if not user.is_authenticated %}
-    <div class="hero" style="margin: 20px">
+    <div class="hero">
         <h2>Welcome to MyApp!</h2>
         <p>Your one-stop solution for connecting freelancers and clients.</p>
         <a href="{% url 'accounts:signup' %}" class="hero-button">Sign Up Today</a>
     </div>
-
     {% elif user.user_type == 'client' %}
     <div class="hero">
         <h2>Welcome Client!</h2>
@@ -22,62 +138,8 @@
     </div>
     {% endif %}
 
-    <!-- Services Section -->
-{#    <section class="services">#}
-{#        <div class="service">#}
-{#            <h3>Efficient Project Management</h3>#}
-{#            <p>Streamline your workflow with our intuitive project management tools.</p>#}
-{#        </div>#}
-{#        <div class="service">#}
-{#            <h3>Quality Freelancers</h3>#}
-{#            <p>Access a diverse pool of talented professionals in various fields.</p>#}
-{#        </div>#}
-{#        <div class="service">#}
-{#            <h3>Secure Payments</h3>#}
-{#            <p>Enjoy safe and reliable transactions for each project milestone.</p>#}
-{#        </div>#}
-{#    </section>#}
-{##}
-{#    <!-- How It Works Section -->#}
-{#    <section class="how-it-works">#}
-{#        <h2>How It Works</h2>#}
-{#        <div class="steps">#}
-{#            <div class="step">#}
-{#                <h3>Create An Account</h3>#}
-{#                <p>Sign up as a freelancer or a client to start your journey with us.</p>#}
-{#            </div>#}
-{#            <div class="step">#}
-{#                <h3>Post or Apply for Projects</h3>#}
-{#                <p>Clients post detailed project briefs, while freelancers submit proposals.</p>#}
-{#            </div>#}
-{#            <div class="step">#}
-{#                <h3>Collaboration and Payment</h3>#}
-{#                <p>Work together efficiently and handle payments securely through our platform.</p>#}
-{#            </div>#}
-{#        </div>#}
-{#    </section>#}
-
-    {% if user.is_authenticated and user.user_type == 'freelancer' %}
-    <section class="matching-projects">
-        <h2>Projects Matching Your Skills</h2>
-        <div class="order-list">
-            {% for order in matching_orders %}
-                <a href="{% url 'listings:order_detail' slug=order.slug %}">
-                <div class="order">
-                    <h3>{{ order.title }}</h3>
-                    <p>{{ order.description }}</p>
-                    <!-- You can add more details about the order here -->
-                </div>
-                </a>
-            {% empty %}
-                <p>No matching projects found.</p>
-            {% endfor %}
-        </div>
-    </section>
-{% endif %}
-
-    <!-- Testimonials Section -->
-        <section class="top-freelancers">
+    <!-- Top Freelancers Section -->
+    <section class="top-freelancers">
         <h2>Top Freelancers</h2>
         <div class="freelancer-list">
             {% for freelancer in top_freelancers %}
@@ -91,11 +153,24 @@
         </div>
     </section>
 
-    <!-- Call to Action Section -->
-{#    <section class="call-to-action">#}
-{#        <h2>Join Our Community</h2>#}
-{#        <p>Be a part of a thriving network of professionals. Enhance your career or business with MyApp.</p>#}
-{#        <a href="{% url 'accounts:signup' %}" class="hero-button">Get Started</a>#}
-{#    </section>#}
+{% if user.is_authenticated and user.user_type == 'freelancer' %}
+    <div class="matching-orders-container">
+        <h2 class="matching-orders-title">Matching Orders for Your Skills</h2>
+        <div class="orders-list">
+            {% for order in matching_orders %}
+                <a href="{% url 'listings:order_detail' order.slug %}" class="order-card-link">
+                    <div class="order-card">
+                        <h3 class="order-title">{{ order.title }}</h3>
+                        <p class="order-description">{{ order.description }}</p>
+                        <!-- Add more details as needed -->
+                    </div>
+                </a>
+            {% empty %}
+                <p class="no-orders-message">No matching orders found.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
 
 {% endblock content %}

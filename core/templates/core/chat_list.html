@@ -1,87 +1,132 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block page_specific_css %}
-<link rel="stylesheet" href="{% static 'css/chat_list.css' %}" />
-<style>
-  .chat-list {
-    list-style-type: none;
-    padding-left: 0;
-  }
-  .chat-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #E8F4F2; /* Light background for chat items */
-  }
-  .chat-image-container {
-    margin-right: 15px;
-  }
-  .chat-profile-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #BD83B8; /* Light purple border */
-  }
-  .chat-info a {
-    display: block;
-    color: #473E66; /* Dark purple for chat names */
-    text-decoration: none;
-  }
-  .chat-info a:hover {
-    text-decoration: underline;
-    color: #F1916D; /* Coral on hover */
-  }
-  .no-chats {
-    text-align: center;
-    color: #06142E; /* Dark blue for no chat message */
-  }
-</style>
-{% endblock page_specific_css %}
-
-
 {% block content %}
-<div class="chat-page">
-  <h1>Chats</h1>
-  <ul class="chat-list">
-    {% for chat in chats %}
-    <li class="chat-item">
-      {% for participant in chat.participants.all %}
-        {% if participant != request.user %}
-          <div class="chat-image-container">
-            <!-- Check if the participant is a freelancer or client and display the corresponding profile image -->
-            {% if participant.user_type == 'freelancer' %}
-              {% with participant.freelancer_profile as profile %}
-                {% if profile.profile_image %}
-                  <img class="chat-profile-image" src="{{ profile.profile_image.url }}" alt="{{ participant.username }}">
-                {% else %}
-                  <img class="chat-profile-image" src="{% static 'img/images.png' %}" alt="Default Profile Image">
-                {% endif %}
-              {% endwith %}
-            {% elif participant.user_type == 'client' %}
-              {% with participant.client_profile as profile %}
-                {% if profile.profile_image %}
-                  <img class="chat-profile-image" src="{{ profile.profile_image.url }}" alt="{{ participant.username }}">
-                {% else %}
-                  <img class="chat-profile-image" src="{% static 'img/images.png' %}" alt="Default Profile Image">
-                {% endif %}
-              {% endwith %}
+<div class="messaging-app">
+    <!-- Chat List Sidebar -->
+    <aside class="chat-list-sidebar">
+        <ul class="chat-list">
+           {% for chat_info in chats_with_other_user %}
+    <li class="chat-item" data-chat-id="{{ chat_info.chat.id }}" onclick="loadChatDetail({{ chat_info.chat.id }});">
+        <div class="chat-image-container">
+            {% if chat_info.other_user_profile_image %}
+                <img class="chat-profile-image" src="{{ chat_info.other_user_profile_image }}" alt="{{ chat_info.other_user.username }}">
+            {% else %}
+                <img class="chat-profile-image" src="{% static 'img/images.png' %}" alt="Default Profile Image">
             {% endif %}
-          </div>
-          <div class="chat-info">
-            <a href="{% url 'chat:chat_detail' chat_id=chat.pk %}">
-              {{ participant.username }}
-            </a>
-          </div>
-        {% endif %}
-      {% endfor %}
+        </div>
+        <div class="chat-info">
+            <span>{{ chat_info.other_user.username }}</span>
+        </div>
     </li>
-    {% empty %}
-    <li class="no-chats">No chats yet.</li>
-    {% endfor %}
-  </ul>
+{% endfor %}
+
+        </ul>
+    </aside>
+
+    <!-- Chat Detail for selected chat -->
+    <section class="chat-detail" id="chat-detail">
+        Please select a chat to view messages.
+    </section>
 </div>
+
+
+    <script>
+function loadChatDetail(chatId) {
+    // Function to load the chat detail via AJAX
+    const chatDetailSection = document.getElementById('chat-detail');
+    chatDetailSection.innerHTML = 'Loading...'; // Optional: loading text
+
+    fetch(`{% url 'chat:chat_detail_ajax' %}?chat_id=${chatId}`)
+        .then(response => response.text())
+        .then(html => {
+            chatDetailSection.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error loading chat details:', error);
+            chatDetailSection.innerHTML = 'Failed to load chat details.';
+        });
+}
+</script>
+
 {% endblock %}
+
+
+{% block page_specific_css %}
+<style>
+    /* Chat List Styles */
+    .chat-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .chat-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 10px;
+        background-color: #FAFAFA; /* Subtle background */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+        transition: box-shadow 0.3s ease;
+    }
+
+    .chat-item:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Deeper shadow on hover */
+    }
+
+    .chat-image-container {
+        margin-right: 15px;
+        flex-shrink: 0; /* Keeps image from shrinking */
+    }
+
+    .chat-profile-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #007BFF; /* Vibrant border color */
+    }
+
+    .chat-info a {
+        color: #1C3D6B; /* Deep blue for text */
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .chat-info a:hover {
+        color: #F05454; /* Bright color on hover */
+    }
+
+    .no-chats {
+        text-align: center;
+        color: #6C757D; /* Muted color for no chat message */
+        font-size: 1rem;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #1C3D6B; /* Matching header color */
+        margin-bottom: 30px;
+    }
+
+    /* Additional Styles for Layout */
+    .messaging-app {
+        display: flex;
+    }
+
+    .chat-list-sidebar {
+        width: 30%;
+        border-right: 1px solid #ddd;
+    }
+
+    .chat-detail {
+        flex-grow: 1;
+        padding-left: 20px;
+    }
+</style>
+
+{% endblock page_specific_css %}

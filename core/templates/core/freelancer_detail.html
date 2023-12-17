@@ -1,7 +1,161 @@
 {% extends 'core/base.html' %}
 {% load static %}
 {% block page_specific_css %}
-  <link rel="stylesheet" href="{% static 'css/freelancer_detail.css' %}" />
+<style>
+  /* Profile Container */
+  .profile-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #E3EAF3; /* Light blue-gray background */
+  }
+
+  /* Profile Card */
+  .profile-card {
+    background: #FFFFFF;
+    border: 1px solid #A3B1C6; /* Soft blue border */
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Profile Header */
+  .profile-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  /* Profile Image */
+  .profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: block;
+    border: 3px solid #2F4F4F; /* Dark slate gray border */
+  }
+
+  /* Profile Details */
+  .profile-details {
+    text-align: center;
+  }
+
+  /* Profile Name */
+  .profile-name {
+    color: #06142E; /* Dark blue for text */
+    font-size: 24px;
+    margin: 10px 0;
+  }
+
+  /* Profile Email */
+  .profile-email {
+    color: #2F4F4F; /* Dark slate gray */
+    margin-bottom: 10px;
+  }
+
+  /* Profile Portfolio */
+  .profile-portfolio {
+    color: #2F4F4F; /* Dark slate gray */
+    margin-bottom: 10px;
+  }
+
+  /* Profile Skills List */
+  .profile-skills ul.skills-list {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+  }
+
+  /* Skills List Items */
+  .profile-skills ul.skills-list li {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 10px;
+    background: #5B8DB8; /* Medium blue for skills background */
+    border-radius: 20px;
+    color: #FFFFFF; /* White text */
+  }
+
+  /* Reviews Section */
+  .reviews {
+    background-color: #DDEEFF; /* Very light blue background */
+    border-left: 4px solid #A3B1C6; /* Soft blue border */
+    padding: 10px;
+    margin-top: 10px;
+    white-space: pre-line;
+  }
+
+  /* Edit Profile Button */
+  .edit-profile-btn {
+    background-color: #5B8DB8; /* Medium blue */
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    display: inline-block;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Edit Profile Button Hover Effect */
+  .edit-profile-btn:hover {
+    background-color: #3C6E71; /* Teal blue on hover */
+  }
+
+  /* Start Chat Button */
+  .start-chat-btn {
+    background-color: #2F4F4F; /* Dark slate gray */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Start Chat Button Hover Effect */
+  .start-chat-btn:hover {
+    background-color: #1B3358; /* Secondary blue on hover */
+  }
+
+  /* Responsive Design Adjustments */
+  @media (max-width: 768px) {
+    .profile-image {
+      width: 120px;
+      height: 120px;
+    }
+
+    .profile-name {
+      font-size: 20px;
+    }
+  }
+
+  .profile-video {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .profile-video video {
+    max-width: 20%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Responsive adjustments for video */
+  @media (max-width: 768px) {
+    .profile-video video {
+      width: 100%;
+    }
+  }
+
+  </style>
 {% endblock page_specific_css %}
 
 {% block content %}
@@ -18,6 +172,15 @@
             <h1 class="profile-name">{{ freelancer.user.first_name }} {{ freelancer.user.last_name }}</h1>
             <p class="profile-email"><strong>Email:</strong> {{ freelancer.user.email }}</p>
             <p class="profile-portfolio"><strong>Portfolio:</strong> <a href="{{ freelancer.portfolio }}">{{ freelancer.portfolio }}</a></p>
+            {% if freelancer.video %}
+            <div class="profile-video">
+              <video controls>
+                <source src="{{ freelancer.video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            {% endif %}
+
             <div class="profile-skills">
                 <strong>Skills:</strong>
                 <ul class="skills-list">
@@ -26,6 +189,8 @@
                     {% endfor %}
                 </ul>
             </div>
+                <p><strong>Skill Description:</strong> {{ freelancer.skill_desc }}</p>
+
             <p><strong>Average Rating:</strong> {{ freelancer.average_rating }}</p>
             <p><strong>Reviews:</strong></p>
             {% if freelancer.reviews %}
