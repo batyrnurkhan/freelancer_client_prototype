@@ -283,6 +283,33 @@
       padding: 15px;
     }
   }
+
+
+  .filter-button {
+      margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #337ab7; /* Different color for the filter button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s ease-in-out;
+  }
+  .filter-button:hover {
+    background-color: #286090; /* Darker color on hover */
+    transform: scale(1.05); /* Slightly enlarge the button when hovered */
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .search-bar .filter-button {
+      width: 100%; /* Full width on small screens */
+      margin-top: 10px; /* Add some space between the buttons on small screens */
+    }
+  }
+
 </style>
 {% endblock %}
 
@@ -291,39 +318,29 @@
 
 <div class="freelancers-container">
 
-    <div class="left-side">
-        <!-- Combined Search and Skill Filter Form -->
-        <form method="get" action="{% url 'accounts:freelancer-list' %}">
-                <div class="search-bar-container">
-        <form method="get" action="{% url 'accounts:freelancer-list' %}">
-            <div class="search-bar">
-                <input type="text" name="search" placeholder="Search freelancers" value="{{ request.GET.search }}" class="search-input">
-                <button type="submit" class="search-button">Search</button>
-            </div>
-        </form>
+    <form method="get" action="{% url 'accounts:freelancer-list' %}">
+    <!-- Search Bar -->
+    <div class="search-bar-container">
+        <div class="search-bar">
+            <input type="text" name="search" placeholder="Search freelancers" value="{{ request.GET.search }}" class="search-input">
+            <button type="submit" class="search-button">Search</button>
+        </div>
     </div>
 
-            <div class="skill-selection">
-                <div class="skills-list">
-                    {% for skill in skills %}
-                    <label class="skill-label">
-                        <input type="checkbox" class="skill-checkbox" name="skill" value="{{ skill.name }}" id="skill-{{ skill.id }}"
-                        {% if skill.name in selected_skills %}checked{% endif %}>
-                        <span>{{ skill.name }}</span>
-                    </label>
-                    {% endfor %}
-                </div>
-                <div id="selected-skills-display" class="selected-skills-display">
-                    <!-- Display selected skills -->
-                    {% for skill in selected_skills %}
-                    <div class="skill-chip">
-                        {{ skill }} <a href="#" class="remove-skill" data-skill="{{ skill }}">×</a>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </form>
+    <!-- Skill Selection -->
+    <div class="skill-selection">
+        <div class="skills-list">
+            {% for skill in skills %}
+<label class="skill-label">
+    <input type="checkbox" name="skills" value="{{ skill.id }}" {% if skill.id|stringformat:"s" in selected_skills %}checked{% endif %}>
+    <span>{{ skill.name }}</span>
+</label>
+{% endfor %}
+        </div>
+        <!-- Include the button inside the form to submit both search and skills -->
+        <button type="submit" class="filter-button">Filter</button>
     </div>
+</form>
     <!-- Freelancer List -->
     <ul class="freelancer-list-ul">
         {% for user in freelancers %}

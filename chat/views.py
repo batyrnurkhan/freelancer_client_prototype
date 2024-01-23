@@ -4,11 +4,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Chat, Message
 from .forms import MessageForm
 from accounts.models import CustomUser
-
+from django.db.models import Max
 
 class ChatListView(LoginRequiredMixin, View):
     def get(self, request):
-        chats = request.user.chats.all()
+        # Annotate each chat with the timestamp of the latest message
+        chats = request.user.chats.annotate(
+            last_message_time=Max('messages__timestamp')
+        ).order_by('-last_message_time')  # Order by this annotation in descending order
 
         # Preparing data for each chat
         chats_with_other_user = []
@@ -17,7 +20,7 @@ class ChatListView(LoginRequiredMixin, View):
             chats_with_other_user.append({
                 'chat': chat,
                 'other_user': other_user,
-                'other_user_profile_image': self.get_profile_image_url(other_user)
+                'other_user_profile_image': self.get_profile_image_url(other_user),
             })
 
         return render(request, 'core/chat_list.html', {'chats_with_other_user': chats_with_other_user})

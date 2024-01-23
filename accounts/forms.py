@@ -26,7 +26,7 @@ class FreelancerProfileForm(forms.ModelForm):
     first_name = forms.CharField(max_length=30, required=False)
     last_name = forms.CharField(max_length=30, required=False)
     skills = forms.ModelMultipleChoiceField(
-        queryset=Skill.objects.all(), 
+        queryset=Skill.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
@@ -68,3 +68,12 @@ from django import forms
 
 class SearchForm(forms.Form):
     query = forms.CharField(label='Search for freelancers')
+
+from django import forms
+from .models import CustomUser
+
+class CustomUserForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name']
+

@@ -2,8 +2,7 @@
 
 from django import forms
 from .models import Order, Job
-from accounts.models import Skill
-
+from accounts.models import Skill, FreelancerProfile
 from django import forms
 from .models import Order
 from accounts.models import Skill
@@ -15,17 +14,20 @@ class OrderForm(forms.ModelForm):
         help_text='Select the skills required for this order.'
     )
 
+    # Add a ModelChoiceField for selecting a freelancer
+    freelancer = forms.ModelChoiceField(
+        queryset=FreelancerProfile.objects.all(),
+        required=False,
+        help_text='Select a freelancer for this order.'
+    )
+
     class Meta:
         model = Order
-        fields = ['title', 'description', 'skills', 'price']
+        fields = ['title', 'description', 'skills', 'price', 'freelancer']  # Include the 'freelancer' field
 
-    # If you need any custom validation, you can add it here
-    # For example:
-    def clean_skills(self):
-        skills = self.cleaned_data.get('skills')
-        # Perform your validation here
-        return skills
 
+class SkillSearchForm(forms.Form):
+    skill_query = forms.CharField(required=False, label='Search Orders by Skills')
 
 class JobForm(forms.ModelForm):
     class Meta:

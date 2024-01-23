@@ -105,6 +105,22 @@ select[multiple] option {
       padding: .8rem 1.5rem;
     }
   }
+  select[multiple] {
+  height: auto;
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+}
+select[multiple] option {
+  padding: 0.5rem;
+}
+  @media (max-width: 768px) {
+    .order-form-container {
+      padding: 1rem;
+    }
+    .btn {
+      padding: .8rem 1.5rem;
+    }
+  }
 </style>
 {% endblock %}
 
@@ -117,6 +133,7 @@ select[multiple] option {
     {{ form.description.label_tag }} {{ form.description }}
     {{ form.skills.label_tag }} {{ form.skills }}
     {{ form.price.label_tag }} {{ form.price }}
+    {{ form.freelancer.label_tag }} {{ form.freelancer }}  <!-- Add the freelancer field -->
     <button type="submit" class="btn btn-create">Create Order</button>
   </form>
   <a href="{{ success_url }}" class="btn btn-cancel">Cancel</a>

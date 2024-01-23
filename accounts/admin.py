@@ -28,8 +28,13 @@ class FreelancerProfileAdmin(admin.ModelAdmin):
 class ClientProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'company_name')
 
+class SkillAdmin(admin.ModelAdmin):
+    list_display = ('name',)  # Fields to display in the skill list view
+    search_fields = ('name',)  # Fields to search in the skill list view
+    ordering = ('name',)  # Default ordering
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(FreelancerProfile, FreelancerProfileAdmin)
 admin.site.register(ClientProfile, ClientProfileAdmin)
-admin.site.register(Skill)
+admin.site.register(Skill, SkillAdmin)

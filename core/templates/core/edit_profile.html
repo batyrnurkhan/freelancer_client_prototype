@@ -156,9 +156,9 @@
     <h2>Edit Profile</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {% for field in form %}
-            <div class="form-group">
-                {{ field.label_tag }}
+{% for field in profile_form %}
+    <div class="form-group">
+        {{ field.label_tag }}
                 {% if field.field.widget.input_type == 'file' %}
                     <!-- Custom file upload button -->
                     <label for="{{ field.id_for_label }}" class="custom-file-upload">

@@ -15,9 +15,11 @@ class Order(models.Model):
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     STATUS_CHOICES = (
         ('open', 'Open'),
+        ('in_request', 'In Request'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
     )
+
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
     freelancer = models.ForeignKey('accounts.FreelancerProfile', on_delete=models.SET_NULL, null=True, blank=True,
                                    related_name='taken_orders')
@@ -42,9 +44,12 @@ class Order(models.Model):
 class Job(models.Model):
     STATUS_CHOICES = (
         ('open', 'Open'),
+        ('in_request', 'In Request'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
     )
+
+
     freelancer = models.ForeignKey('accounts.FreelancerProfile', on_delete=models.SET_NULL, null=True, related_name='jobs')
     client = models.ForeignKey('accounts.ClientProfile', on_delete=models.CASCADE, related_name='projects')
     title = models.CharField(max_length=200)

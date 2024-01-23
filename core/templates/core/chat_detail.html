@@ -10,7 +10,9 @@
             {% if message.author.user_type == 'freelancer' %}
             {% with message.author.freelancer_profile as profile %}
             {% if profile.profile_image %}
-            <img class="message-profile-image" src="{{ profile.profile_image.url }}" alt="{{ message.author.username }}">
+            <a href="{% url 'accounts:freelancer_detail' pk=profile.id %}">
+                <img class="message-profile-image" src="{{ profile.profile_image.url }}" alt="{{ message.author.username }}">
+            </a>
             {% else %}
             <img class="message-profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Profile Image">
             {% endif %}

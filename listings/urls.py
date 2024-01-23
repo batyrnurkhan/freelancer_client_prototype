@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import TakenOrdersListView
 
 app_name = 'listings'
 
@@ -16,4 +17,6 @@ urlpatterns = [
 
     # Freelancer-specific views
     path('freelancer/taken-orders/', views.TakenOrdersListView.as_view(), name='taken_orders_list'),
+    path('taken-orders/', TakenOrdersListView.as_view(), name='taken_orders'),
+
 ]

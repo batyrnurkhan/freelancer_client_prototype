@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import SignUpView, SignInView, ProfileUpdateView, ProfileDetailView, FreelancerListView, LogoutView, \
-    FreelancerDetailView, ClientListView, ClientDetailView, activate_account
+    FreelancerDetailView, ClientListView, ClientDetailView, activate_account, skill_search, OrderListView
 from django.contrib.auth import views as auth_views
 from django.urls import path
 from .views import search_freelancers
@@ -18,6 +18,8 @@ urlpatterns = [
     path('clients/', ClientListView.as_view(), name='client-list'),
     path('clients/<int:pk>/', ClientDetailView.as_view(), name='client_detail'),
     path('activate/<str:token>/', activate_account, name='activate'),
-    path('search/', search_freelancers, name='search_freelancers'),
+    path('search/', search_freelancers, name='your_search_view_url_name'),
+    path('skill/', skill_search, name='skill_search'),
+    path('orders/', OrderListView.as_view(), name='name_of_order_list_view'),
 
 ]

@@ -108,15 +108,8 @@
             }
         }
 
-        /* Main content adjustments */
-        main {
-            flex-grow: 1;
-            padding: 20px 10px; /* Adjust padding for smaller screens */
-            background-color: #fff; /* A clean white background for the content */
-            border-radius: 6px;
-            margin: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+
+
 
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Roboto', sans-serif; /* Secondary font for headings */
@@ -277,6 +270,8 @@
                     <li><a href="{% url 'listings:orders_list' %}">Orders</a></li>
                     {% if user.user_type == 'client' %}
                         <li><a href="{% url 'accounts:freelancer-list' %}">Freelancers</a></li>
+                                            <li><a href="{% url 'listings:taken_orders' %}">Taken</a></li>
+
                     {% endif %}
                 {% endif %}
                 {% if user.is_superuser %}
@@ -308,7 +303,6 @@
 
     <main>
         {% block content %}
-        <!-- Page specific content will go here -->
         {% endblock content %}
     </main>
 

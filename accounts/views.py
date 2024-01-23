@@ -1,4 +1,4 @@
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
@@ -44,37 +44,53 @@ class SignUpView(generic.CreateView):
 class SignInView(LoginView):
     template_name = 'core/signin.html'
 
-
+from .forms import CustomUserForm
 from django.shortcuts import get_object_or_404
+
 class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
     template_name = 'core/edit_profile.html'
-    success_url = reverse_lazy('profile_detail')
+    form_class = CustomUserForm  # Assume this is the form for the CustomUser model
+    success_url = reverse_lazy('accounts:profile_detail')
+    def get_object(self, queryset=None):
+        return self.request.user
 
-    def get_form_class(self):
-        if self.request.user.user_type == 'freelancer':
-            return FreelancerProfileForm
-        elif self.request.user.user_type == 'client':
-            return ClientProfileForm
-        else:
-            return ProfileForm
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        if not context.get('form'):
+            context['form'] = self.form_class(instance=user)
+        if user.user_type == 'freelancer':
+            context['profile_form'] = FreelancerProfileForm(instance=user.freelancer_profile)
+        elif user.user_type == 'client':
+            context['profile_form'] = ClientProfileForm(instance=user.client_profile)
+        return context
 
-    def get_object(self):
-        if self.request.user.user_type == 'freelancer':
-            return get_object_or_404(FreelancerProfile, user=self.request.user)
-        elif self.request.user.user_type == 'client':
-            return get_object_or_404(ClientProfile, user=self.request.user)
-        else:
-            # Assuming every user has a basic profile
-            return get_object_or_404(Profile, user=self.request.user)
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        user = self.request.user  # Define 'user' by getting it from the request
 
-    def get_success_url(self):
-        # You can customize the success URL based on the user type if needed
-        if self.request.user.user_type == 'freelancer':
-            return reverse_lazy('accounts:profile_detail')
-        elif self.request.user.user_type == 'client':
-            return reverse_lazy('accounts:profile_detail')
+        if user.user_type == 'freelancer':
+            profile_form = FreelancerProfileForm(request.POST, request.FILES, instance=user.freelancer_profile)
+        elif user.user_type == 'client':
+            profile_form = ClientProfileForm(request.POST, request.FILES, instance=user.client_profile)
         else:
-            return super().get_success_url()
+            profile_form = None  # or handle as appropriate for your application
+
+        if form.is_valid() and profile_form and profile_form.is_valid():
+            return self.form_valid(form, profile_form)
+        else:
+            return self.form_invalid(form, profile_form)
+
+    def form_valid(self, user_form, profile_form):
+        user_form.save()
+        profile_form.save()
+        messages.success(self.request, 'Profile updated successfully')
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, user_form, profile_form):
+        return self.render_to_response(self.get_context_data(form=user_form, profile_form=profile_form))
+
 
 class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
     model = Profile
@@ -109,28 +125,26 @@ class FreelancerListView(ListView):
 
     def get_queryset(self):
         queryset = CustomUser.objects.get_freelancers()
-        search_query = self.request.GET.get('search')
-        skill_filter = self.request.GET.getlist('skill')
+        search_query = self.request.GET.get('search', '')
+        skill_filter = self.request.GET.getlist('skills')  # 'skills' is the name of the input
 
-        # Check for the search query
         if search_query:
             queryset = queryset.filter(
                 Q(username__icontains=search_query) |
                 Q(email__icontains=search_query) |
-                Q(freelancer_profile__skill_desc__icontains=search_query)  # Filter by skill description
+                Q(freelancer_profile__skill_desc__icontains=search_query)
             )
 
-        # Filter by selected skills
         if skill_filter:
             queryset = queryset.filter(
-                freelancer_profile__skills__name__in=skill_filter
+                freelancer_profile__skills__id__in=skill_filter
             ).distinct()
 
-        return queryset.distinct()
+        return queryset
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['selected_skills'] = self.request.GET.getlist('skill')
+        context = super(FreelancerListView, self).get_context_data(**kwargs)
+        context['selected_skills'] = self.request.GET.getlist('skills')  # 'skills' should match your form's input name
         context['skills'] = Skill.objects.all()
         return context
 
@@ -141,6 +155,12 @@ class FreelancerDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_object(self):
         return get_object_or_404(FreelancerProfile, pk=self.kwargs.get('pk'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        freelancer = self.get_object()
+        context['orders_in_request'] = Order.objects.filter(freelancer=freelancer, status='in_request')
+        return context
 
 class ClientListView(LoginRequiredMixin, ListView):
     model = CustomUser  # Update this if you have a specific Client model
@@ -192,7 +212,7 @@ class LogoutView(LogoutView):
 
 
 from django.shortcuts import redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 def activate_account(request, token):
     try:
@@ -215,21 +235,49 @@ from django.db import models
 from .forms import SearchForm
 from .models import FreelancerProfile
 
+from django.db.models import Q
+from .models import FreelancerProfile, Skill
 
 def search_freelancers(request):
-    form = SearchForm(request.GET)
-    freelancers = FreelancerProfile.objects.all()
-
-    if form.is_valid():
-        query = form.cleaned_data['query']
-
-        # Filter freelancers based on skills and other profile attributes
-        freelancers = freelancers.filter(
-            models.Q(skills__name__icontains=query) |
-            models.Q(user__username__icontains=query) |
-            models.Q(skill_desc__icontains=query) |
-            models.Q(portfolio__icontains=query) |
-            models.Q(reviews__icontains=query)
+    query = request.GET.get('search', '')
+    if query:
+        skills = Skill.objects.filter(name__icontains=query)
+        freelancers = FreelancerProfile.objects.filter(
+            Q(skills__in=skills) |
+            Q(user__username__icontains=query) |
+            Q(skill_desc__icontains=query) |
+            Q(portfolio__icontains=query) |
+            Q(reviews__icontains=query)
         ).distinct()
+    else:
+        freelancers = FreelancerProfile.objects.none()  # Or all() if you prefer to show all by default
 
-    return render(request, 'core/freelancer_search_results.html', {'form': form, 'freelancers': freelancers})
+    return render(request, 'core/freelancer_search_results.html', {
+        'freelancers': freelancers,
+        'query': query
+    })
+
+
+from django.http import JsonResponse
+from .models import Skill
+
+def skill_search(request):
+    search_text = request.GET.get('search_text', '')
+    skills = Skill.objects.filter(name__icontains=search_text).values('name')
+    return JsonResponse({'skills': list(skills)})
+
+class OrderListView(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = 'core/orders/order_list.html'  # Update this to your actual template name
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        selected_skills = self.request.GET.getlist('selected_skills')
+
+        if selected_skills:
+            queryset = queryset.filter(skills__name__in=selected_skills).distinct()
+
+        # You can add additional filtering here if needed
+
+        return queryset

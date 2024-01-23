@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'clearcache',
     'rest_framework',
     'corsheaders',
+
 ]
 
 MIDDLEWARE = [

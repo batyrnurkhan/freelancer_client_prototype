@@ -13,14 +13,25 @@ class OrderListView(LoginRequiredMixin, ListView):
     template_name = 'core/orders/order_list.html'
     context_object_name = 'orders'
 
+    def get_queryset(self):
+        queryset = super().get_queryset().exclude(status='in_progress')
+        skill_query_list = self.request.GET.getlist('skills')
+        min_price = self.request.GET.get('min_price')
+        max_price = self.request.GET.get('max_price')
+
+        if skill_query_list:
+            queryset = queryset.filter(skills__name__in=skill_query_list).distinct()
+        if min_price:
+            queryset = queryset.filter(price__gte=min_price)
+        if max_price:
+            queryset = queryset.filter(price__lte=max_price)
+
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['open_orders'] = self.model.objects.filter(status='open')
-        if self.request.user.is_authenticated and self.request.user.user_type == 'freelancer':
-            context['taken_orders'] = self.model.objects.filter(
-                freelancer=self.request.user.freelancer_profile,
-                status='in_progress'
-            )
+        context['selected_skills'] = self.request.GET.getlist('skills')
+        context['all_skills'] = Skill.objects.all()
         return context
 
 
@@ -68,19 +79,41 @@ class OrderUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         order = self.get_object()
         return self.request.user == order.client or self.request.user.is_staff
 
-
+from django.db.models import Count
+from chat.models import Chat, Message
 # View for freelancers to take an order
 class TakeOrderView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         order = get_object_or_404(Order, id=self.kwargs['order_id'])
         if order.status == 'open':
             order.freelancer = request.user.freelancer_profile
-            order.status = 'in_progress'
+            order.status = 'in_request'  # Change status to 'in_request'
             order.save()
             messages.success(request, 'You have successfully taken the order.')
+
+            # Send message to the client who owns the order
+            self.notify_client(order)
+
             return redirect('listings:orders_list')
         messages.error(request, 'This order is no longer available.')
         return redirect('listings:orders_list')
+
+    def notify_client(self, order):
+        client = order.client
+        freelancer = self.request.user
+
+        # Check if there's an existing chat between the client and the freelancer
+        chat = Chat.objects.annotate(num_participants=Count('participants')).filter(
+            num_participants=2, participants=client).filter(participants=freelancer).first()
+
+        if not chat:
+            # Create a new chat if it doesn't exist
+            chat = Chat.objects.create()
+            chat.participants.add(client, freelancer)
+
+        # Create a message in the chat
+        message_text = f"Hello, I have taken your order titled '{order.title}'. A request has been sent to you for approval."
+        Message.objects.create(author=freelancer, chat=chat, content=message_text)
 
 
 # View for updating the status of an order
@@ -104,13 +137,9 @@ class UpdateOrderStatusView(LoginRequiredMixin, UserPassesTestMixin, View):
 # View for freelancers to see their taken orders
 class TakenOrdersListView(LoginRequiredMixin, ListView):
     model = Order
-    template_name = 'core/orders/taken_orders_list.html'
+    template_name = 'core/orders/taken_orders_list.html'  # Create this template
     context_object_name = 'taken_orders'
 
     def get_queryset(self):
-        if self.request.user.is_authenticated and self.request.user.user_type == 'freelancer':
-            return self.model.objects.filter(
-                freelancer=self.request.user.freelancer_profile,
-                status='in_progress'
-            )
-        return self.model.objects.none()
+        return Order.objects.filter(client=self.request.user, status='in_progress')
+

@@ -1,205 +1,186 @@
 {% extends 'core/base.html' %}
 {% load static %}
+
 {% block page_specific_css %}
+<!-- Styles from profile_detail.html -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-  /* Profile Container */
-  .profile-container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #E3EAF3; /* Light blue-gray background */
-  }
-
-  /* Profile Card */
-  .profile-card {
-    background: #FFFFFF;
-    border: 1px solid #A3B1C6; /* Soft blue border */
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Profile Header */
-  .profile-header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  /* Profile Image */
-  .profile-image {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin: 0 auto;
-    display: block;
-    border: 3px solid #2F4F4F; /* Dark slate gray border */
-  }
-
-  /* Profile Details */
-  .profile-details {
-    text-align: center;
-  }
-
-  /* Profile Name */
-  .profile-name {
-    color: #06142E; /* Dark blue for text */
-    font-size: 24px;
-    margin: 10px 0;
-  }
-
-  /* Profile Email */
-  .profile-email {
-    color: #2F4F4F; /* Dark slate gray */
-    margin-bottom: 10px;
-  }
-
-  /* Profile Portfolio */
-  .profile-portfolio {
-    color: #2F4F4F; /* Dark slate gray */
-    margin-bottom: 10px;
-  }
-
-  /* Profile Skills List */
-  .profile-skills ul.skills-list {
-    list-style: none;
-    padding: 0;
-    text-align: center;
-  }
-
-  /* Skills List Items */
-  .profile-skills ul.skills-list li {
-    display: inline-block;
-    margin: 5px;
-    padding: 5px 10px;
-    background: #5B8DB8; /* Medium blue for skills background */
-    border-radius: 20px;
-    color: #FFFFFF; /* White text */
-  }
-
-  /* Reviews Section */
-  .reviews {
-    background-color: #DDEEFF; /* Very light blue background */
-    border-left: 4px solid #A3B1C6; /* Soft blue border */
-    padding: 10px;
-    margin-top: 10px;
-    white-space: pre-line;
-  }
-
-  /* Edit Profile Button */
-  .edit-profile-btn {
-    background-color: #5B8DB8; /* Medium blue */
-    color: white;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 4px;
-    border: none;
-    display: inline-block;
-    margin-top: 20px;
-    transition: background-color 0.3s ease;
-  }
-
-  /* Edit Profile Button Hover Effect */
-  .edit-profile-btn:hover {
-    background-color: #3C6E71; /* Teal blue on hover */
-  }
-
-  /* Start Chat Button */
-  .start-chat-btn {
-    background-color: #2F4F4F; /* Dark slate gray */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-  }
-
-  /* Start Chat Button Hover Effect */
-  .start-chat-btn:hover {
-    background-color: #1B3358; /* Secondary blue on hover */
-  }
-
-  /* Responsive Design Adjustments */
-  @media (max-width: 768px) {
-    .profile-image {
-      width: 120px;
-      height: 120px;
+    /* Existing styles from profile_detail.html */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #eaeaea;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
-    .profile-name {
-      font-size: 20px;
+    .profile-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        background-color: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        display: flex;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
-  }
 
-  .profile-video {
-    margin-top: 10px;
-    text-align: center;
-  }
+    .profile-sidebar {
+        width: 35%;
+        background-color: #2a5298;
+        color: white;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-  .profile-video video {
-    max-width: 20%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
+    .profile-sidebar .profile-image {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        margin-bottom: 30px;
+        border: 5px solid white;
+    }
 
-  /* Responsive adjustments for video */
-  @media (max-width: 768px) {
+    .profile-main {
+        width: 65%;
+        padding: 30px;
+    }
+
+    .section-title {
+        font-size: 22px;
+        color: #2a5298;
+        margin-bottom: 20px;
+        padding-bottom: 5px;
+    }
+
+    .edit-profile-btn {
+        display: block;
+        width: auto;
+        padding: 10px 20px;
+        margin: 20px auto;
+        font-size: 18px;
+        text-align: center;
+        color: white;
+        background-color: #5B8DB8;
+        border: none;
+        border-radius: 20px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .edit-profile-btn:hover {
+        background-color: #3C6E71;
+    }
+
+    .profile-video {
+        margin-top: 20px;
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
     .profile-video video {
-      width: 100%;
+        display: block;
+        width: 100%;
+        height: auto;
     }
-  }
 
-  </style>
+    /* Responsive Design */
+    @media (max-width: 991px) {
+        .profile-container {
+            flex-direction: column;
+        }
+        .profile-sidebar, .profile-main {
+            width: 100%;
+        }
+    }
+</style>
 {% endblock page_specific_css %}
 
 {% block content %}
 <div class="profile-container">
-    <div class="profile-card">
-        <div class="profile-header">
-            {% if freelancer.profile_image %}
-                <img class="profile-image" src="{{ freelancer.profile_image.url }}" alt="Freelancer Profile Image">
-            {% else %}
-                <img class="profile-image" src="{% static 'img/images.png' %}" alt="Default Profile Image">
-            {% endif %}
+    <div class="profile-sidebar">
+        <!-- Profile Image -->
+        {% if freelancer.profile_image %}
+            <img class="profile-image" src="{{ freelancer.profile_image.url }}" alt="{{ freelancer.user.username }}">
+        {% else %}
+            <img class="profile-image" src="{% static 'img/default-avatar.png' %}" alt="Default Avatar">
+        {% endif %}
+
+        <!-- User Full Name -->
+        <h1 class="profile-title">{{ freelancer.user.first_name|upper }} {{ freelancer.user.last_name|upper }}</h1>
+
+        <!-- Skill Description as Subtitle -->
+        <h2 class="profile-subtitle">{{ freelancer.skill_desc|upper }}</h2>
+
+        <!-- Contact Information -->
+        <div class="profile-contact-info">
+            <p>{{ freelancer.user.email }}</p>
         </div>
-        <div class="profile-details">
-            <h1 class="profile-name">{{ freelancer.user.first_name }} {{ freelancer.user.last_name }}</h1>
-            <p class="profile-email"><strong>Email:</strong> {{ freelancer.user.email }}</p>
-            <p class="profile-portfolio"><strong>Portfolio:</strong> <a href="{{ freelancer.portfolio }}">{{ freelancer.portfolio }}</a></p>
-            {% if freelancer.video %}
-            <div class="profile-video">
-              <video controls>
+
+        <!-- Video (if available) -->
+        {% if freelancer.video %}
+        <div class="profile-video">
+            <video controls width="250">
                 <source src="{{ freelancer.video.url }}" type="video/mp4">
                 Your browser does not support the video tag.
-              </video>
-            </div>
-            {% endif %}
-
-            <div class="profile-skills">
-                <strong>Skills:</strong>
-                <ul class="skills-list">
-                    {% for skill in freelancer.skills.all %}
-                        <li>{{ skill.name }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-                <p><strong>Skill Description:</strong> {{ freelancer.skill_desc }}</p>
-
-            <p><strong>Average Rating:</strong> {{ freelancer.average_rating }}</p>
-            <p><strong>Reviews:</strong></p>
-            {% if freelancer.reviews %}
-            <div class="reviews">{{ freelancer.reviews }}</div>
-            {% else %}
-            <div class="reviews">No reviews yet.</div>
-            {% endif %}
-            <a href="{% url 'chat:start_chat' username=freelancer.user.username %}" class="start-chat-btn">Start Chat</a>
+            </video>
         </div>
+        {% endif %}
+
+        <!-- Portfolio Link -->
+        {% if freelancer.portfolio %}
+        <div class="profile-social-link">
+            <p>Portfolio:</p>
+            <p><a href="{{ freelancer.portfolio }}" target="_blank">{{ freelancer.portfolio }}</a></p>
+        </div>
+        {% endif %}
+
+        <!-- Edit Profile Button -->
+        <a href="{% url 'accounts:edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
+    </div>
+
+    <div class="profile-main">
+        <!-- Skills Section -->
+        <div class="section-title">Skills</div>
+        <ul class="list-skills">
+            {% for skill in freelancer.skills.all %}
+                <li>{{ skill.name }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Education Section -->
+        <div class="section-title">Education History</div>
+        <ul class="list-education">
+            <li>{{ freelancer.education }}</li> <!-- Add dynamic content for education -->
+        </ul>
+
+        <!-- Average Rating -->
+        <div>
+            <strong>Average Rating:</strong> {{ freelancer.average_rating }}
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="section-title">Reviews</div>
+        <div class="reviews">
+            {{ freelancer.reviews|default:"No reviews yet." }}
+        </div>
+
+        <!-- Start Chat Button -->
+        <a href="{% url 'chat:start_chat' username=freelancer.user.username %}" class="start-chat-btn">Start Chat</a>
+         {% if request.user.is_authenticated and request.user.user_type == 'client' %}
+        {% for order in freelancer.orders_in_request %}
+            <form action="{% url 'confirm_freelancer_for_order' order.id freelancer.user.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Confirm Freelancer for Order #{{ order.id }}</button>
+            </form>
+        {% empty %}
+            <p>No orders to confirm.</p>
+        {% endfor %}
+    {% endif %}
     </div>
 </div>
 {% endblock %}
