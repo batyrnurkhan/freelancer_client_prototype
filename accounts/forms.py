@@ -23,8 +23,6 @@ class ProfileForm(forms.ModelForm):
 from .models import FreelancerProfile, Skill
 
 class FreelancerProfileForm(forms.ModelForm):
-    first_name = forms.CharField(max_length=30, required=False)
-    last_name = forms.CharField(max_length=30, required=False)
     skills = forms.ModelMultipleChoiceField(
         queryset=Skill.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -33,7 +31,7 @@ class FreelancerProfileForm(forms.ModelForm):
 
     class Meta:
         model = FreelancerProfile
-        fields = ['first_name', 'last_name', 'skills', 'skill_desc', 'portfolio', 'profile_image', 'video']  # Include 'skill_desc' here
+        fields = ['skills', 'skill_desc', 'portfolio', 'profile_image', 'video']  # Include 'skill_desc' here
 
 from .models import Rating
 

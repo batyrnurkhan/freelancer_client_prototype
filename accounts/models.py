@@ -120,7 +120,7 @@ class FreelancerProfile(models.Model):
         upload_to='profile_images/',
         null=True,
         blank=True,
-        default='profile_images/images.png'
+        default='static/img/images.png'
     )
     video = models.FileField(
         upload_to='profile_videos/',

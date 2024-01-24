@@ -40,3 +40,4 @@ class JobForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'type': 'date'}),
         help_text='Format: YYYY-MM-DD'
     )
+

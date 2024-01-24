@@ -150,39 +150,74 @@
 
 </style>
 {% endblock page_specific_css %}
-
 {% block content %}
 <div class="edit-profile-container">
     <h2>Edit Profile</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-{% for field in profile_form %}
-    <div class="form-group">
-        {{ field.label_tag }}
-                {% if field.field.widget.input_type == 'file' %}
-                    <!-- Custom file upload button -->
-                    <label for="{{ field.id_for_label }}" class="custom-file-upload">
-                        Choose file
-                    </label>
-                    <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}" style="display: none;">
-                    {% if field.value %}
-                        <!-- Display the file name if it exists -->
-                        <span class="file-name">
-                            {{ field.value.name }}
-                        </span>
-                    {% endif %}
-                {% else %}
-                    {{ field }}
+        <!-- Fields for first name and last name -->
+        <div class="form-group">
+            <label for="id_first_name">First name:</label>
+            <input type="text" id="id_first_name" name="first_name" value="{{ user.first_name }}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="id_last_name">Last name:</label>
+            <input type="text" id="id_last_name" name="last_name" value="{{ user.last_name }}" class="form-control">
+        </div>
+        <!-- Profile specific fields -->
+        {% for field in profile_form %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {% if field.field.widget.input_type == 'file' %}
+                <!-- Custom file upload button -->
+                <label for="{{ field.id_for_label }}" class="custom-file-upload">
+                    Choose file
+                </label>
+                <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}" style="display: none;">
+                {% if field.value %}
+                    <!-- Display the file name if it exists -->
+                    <span class="file-name">
+                        {{ field.value.name }}
+                    </span>
                 {% endif %}
-                {% if field.help_text %}
-                    <small class="form-text text-muted">{{ field.help_text }}</small>
-                {% endif %}
-                {% for error in field.errors %}
-                    <small class="form-text text-danger">{{ error }}</small>
-                {% endfor %}
-            </div>
+            {% else %}
+                {{ field }}
+            {% endif %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+                <small class="form-text text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
         {% endfor %}
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 </div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var fileInputs = document.querySelectorAll('input[type="file"]');
+    Array.prototype.forEach.call(fileInputs, function(input) {
+        var label = input.nextElementSibling,
+            labelVal = label.innerHTML;
+
+        input.addEventListener('change', function(e) {
+            var fileName = '';
+            if(this.files && this.files.length > 1)
+                fileName = ( this.getAttribute('data-multiple-caption') || '' ).replace('{count}', this.files.length);
+            else
+                fileName = e.target.value.split('\\').pop();
+
+            if(fileName)
+                label.querySelector('span.file-name').innerHTML = fileName;
+            else
+                label.innerHTML = labelVal;
+        });
+    });
+});
+</script>
+
 {% endblock %}

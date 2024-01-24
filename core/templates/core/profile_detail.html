@@ -132,71 +132,76 @@ body {
 }
 </style>
 {% endblock page_specific_css %}
-
 {% block content %}
 <div class="profile-container">
+    <!-- Profile Sidebar for Image and Basic Info -->
     <div class="profile-sidebar">
-        <!-- Profile Image -->
-        {% if user.freelancer_profile.profile_image %}
-            <img class="profile-image" src="{{ user.freelancer_profile.profile_image.url }}" alt="{{ user.username }}">
+        {% if user.profile.profile_image %}
+            <img class="profile-image" src="{{ user.profile.profile_image.url }}" alt="{{ user.username }}">
         {% else %}
-            <img class="profile-image" src="{% static 'img/default-avatar.png' %}" alt="Default Avatar">
+            <img class="profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Avatar">
         {% endif %}
 
         <!-- User Full Name -->
         <h1 class="profile-title">{{ user.first_name|upper }} {{ user.last_name|upper }}</h1>
 
-        <!-- Skill Description as Subtitle -->
-        <h2 class="profile-subtitle">{{ user.freelancer_profile.skill_desc|upper }}</h2>
+        <!-- Different subtitles based on user type -->
+        {% if user.user_type == 'freelancer' %}
+            <h2 class="profile-subtitle">{{ user.freelancer_profile.skill_desc|upper }}</h2>
+        {% elif user.user_type == 'client' %}
+            <h2 class="profile-subtitle">{{ user.client_profile.company_name|upper }}</h2>
+        {% endif %}
 
         <!-- Contact Information -->
         <div class="profile-contact-info">
-            <p>{{ user.phone_number }}</p> <!-- Add the phone_number field to your model if it doesn't exist -->
             <p>{{ user.email }}</p>
         </div>
 
-        <!-- Video (if available) -->
-        {% if user.freelancer_profile.video %}
-        <div class="profile-video">
-            <video controls width="250">
-                <source src="{{ user.freelancer_profile.video.url }}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-        {% endif %}
-
-        <!-- GitHub Link -->
-        {% if user.freelancer_profile.portfolio %}
-        <div class="profile-social-link">
-            <p>GitHub:</p>
-            <p><a href="{{ user.freelancer_profile.portfolio }}" target="_blank">{{ user.freelancer_profile.portfolio }}</a></p>
-        </div>
-        {% endif %}
-
         <!-- Edit Profile Button -->
-        <a href="{% url 'accounts:edit_profile'%}" class="edit-profile-btn">Edit Profile</a> <!-- Update 'profile_edit' with the correct URL name -->
+        <a href="{% url 'accounts:edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
     </div>
 
+    <!-- Profile Main for Detailed Info -->
     <div class="profile-main">
-        <!-- Skills Section -->
-        {% if user.freelancer_profile.skills.exists %}
-        <div class="section-title">НАВЫКИ</div>
-        <ul class="list-skills">
-            {% for skill in user.freelancer_profile.skills.all %}
-                <li>{{ skill.name }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
+        <!-- Freelancer Profile -->
+        {% if user.user_type == 'freelancer' %}
+            <div class="section-title">SKILLS</div>
+            {% if user.freelancer_profile.skills.exists %}
+                <ul class="list-skills">
+                    {% for skill in user.freelancer_profile.skills.all %}
+                        <li>{{ skill.name }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No skills to display.</p>
+            {% endif %}
 
-        <!-- Education Section -->
-        <div class="section-title">EDUCATION HISTORY</div>
-        <ul class="list-education">
-            <!-- Replace with dynamic content from your context -->
-            <li>{{ user.freelancer_profile.education }}</li> <!-- Update this line based on how you store education data -->
-        </ul>
-    <div>
-    <strong>Average Rating:</strong> {{ user.freelancer_profile.average_rating }}
-</div>
+            <div class="section-title">PORTFOLIO</div>
+            {% if user.freelancer_profile.portfolio %}
+                <p><a href="{{ user.freelancer_profile.portfolio }}" target="_blank">{{ user.freelancer_profile.portfolio }}</a></p>
+            {% else %}
+                <p>No portfolio to display.</p>
+            {% endif %}
+
+        <!-- Client Profile -->
+        {% elif user.user_type == 'client' %}
+            <div class="section-title">COMPANY INFORMATION</div>
+            <p><strong>Website:</strong> <a href="{{ user.client_profile.company_website }}" target="_blank">{{ user.client_profile.company_website }}</a></p>
+            <p><strong>Industry:</strong> {{ user.client_profile.industry }}</p>
+            <p><strong>Preferred Communication:</strong> {{ user.client_profile.preferred_communication }}</p>
+            <p><strong>Description:</strong> {{ user.client_profile.company_description }}</p>
+
+            <div class="section-title">CLOSED ORDERS</div>
+            {% if closed_orders %}
+                <ul>
+                    {% for order in closed_orders %}
+                        <li>{{ order.title }} - {{ order.description }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No closed orders to display.</p>
+            {% endif %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}

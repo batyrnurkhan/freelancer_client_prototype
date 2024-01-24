@@ -74,11 +74,15 @@
 {% endblock page_specific_css %}
 {% block content %}
 <div class="sign-in-container">
-  <h2>Sign in</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign in</button>
-  </form>
+    <h2>Sign in</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Sign in</button>
+    </form>
+    <!-- Add a link for users who don't have an account -->
+    <div style="text-align: center; margin-top: 20px;">
+        <p>Don't have an account? <a href="{% url 'accounts:signup' %}" style="color: #5B8DB8;">Sign up</a></p>
+    </div>
 </div>
 {% endblock %}

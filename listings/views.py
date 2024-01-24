@@ -14,7 +14,9 @@ class OrderListView(LoginRequiredMixin, ListView):
     context_object_name = 'orders'
 
     def get_queryset(self):
-        queryset = super().get_queryset().exclude(status='in_progress')
+        # Exclude orders with 'closed' and 'in_progress' status
+        queryset = super().get_queryset().exclude(status__in=['closed', 'in_progress'])
+
         skill_query_list = self.request.GET.getlist('skills')
         min_price = self.request.GET.get('min_price')
         max_price = self.request.GET.get('max_price')
@@ -36,22 +38,26 @@ class OrderListView(LoginRequiredMixin, ListView):
 
 
 # View for creating a new order, restricted to clients
-class OrderCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class OrderCreateView(CreateView):
     model = Order
     form_class = OrderForm
     template_name = 'core/orders/order_form.html'
     success_url = reverse_lazy('listings:orders_list')
 
     def form_valid(self, form):
-        form.instance.client = self.request.user
+        order = form.save(commit=False)
+        order.client = self.request.user  # Adjust as necessary for your user model
+        order.save()
+        form.save_m2m()
         return super().form_valid(form)
 
-    def test_func(self):
-        return self.request.user.user_type == 'client'
+    def form_invalid(self, form):
+        print("Form errors:", form.errors)  # Log form errors
+        return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['skills'] = Skill.objects.all()
+        context['skills'] = Skill.objects.all()  # Pass skills to the context if needed for filtering or display
         return context
 
 
@@ -82,16 +88,17 @@ class OrderUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 from django.db.models import Count
 from chat.models import Chat, Message
 # View for freelancers to take an order
+
 class TakeOrderView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         order = get_object_or_404(Order, id=self.kwargs['order_id'])
         if order.status == 'open':
-            order.freelancer = request.user.freelancer_profile
-            order.status = 'in_request'  # Change status to 'in_request'
+            # Removed the line that assigns the freelancer to the order
+            order.status = 'in_request'  # Optionally, keep or remove this line based on your requirements
             order.save()
-            messages.success(request, 'You have successfully taken the order.')
+            messages.success(request, 'Your interest in taking the order has been sent to the client.')
 
-            # Send message to the client who owns the order
+            # Proceed to send message to the client
             self.notify_client(order)
 
             return redirect('listings:orders_list')
@@ -112,8 +119,10 @@ class TakeOrderView(LoginRequiredMixin, View):
             chat.participants.add(client, freelancer)
 
         # Create a message in the chat
-        message_text = f"Hello, I have taken your order titled '{order.title}'. A request has been sent to you for approval."
+        message_text = f"Hello, I have shown interest in your order titled '{order.title}'. Please review my profile and let me know if you're interested."
         Message.objects.create(author=freelancer, chat=chat, content=message_text)
+
+
 
 
 # View for updating the status of an order

@@ -24,13 +24,15 @@ class Order(models.Model):
     freelancer = models.ForeignKey('accounts.FreelancerProfile', on_delete=models.SET_NULL, null=True, blank=True,
                                    related_name='taken_orders')
     taken_at = models.DateTimeField(null=True, blank=True)
+
     def save(self, *args, **kwargs):
-        if not self.slug:
-            # Use UUID to generate a unique slug
-            self.slug = slugify(f"{self.title}-{uuid.uuid4()}")
-        if self.status == 'in_progress' and not self.taken_at:
-            self.taken_at = timezone.now()
+        if self.freelancer and not self.status in ['completed', 'closed']:
+            self.status = 'in_progress'  # Change status to in_progress when a freelancer is assigned
+
         super(Order, self).save(*args, **kwargs)
+
+        super(Order, self).save(*args, **kwargs)
+
 
     def is_completed(self):
         # Assuming you have some criteria to check if an order is completed

@@ -2,13 +2,15 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from .models import Profile, FreelancerProfile, ClientProfile, Skill
+from .models import Profile, FreelancerProfile, ClientProfile, Skill, CustomUser
 from .forms import CustomUserCreationForm, ProfileForm, FreelancerProfileForm, ClientProfileForm
 from django.db import transaction
 from listings.models import Order
 from django.db.models import Count, Q
 from django.core.mail import send_mail
 from django.conf import settings
+from django.views.generic import UpdateView
+from django.views.generic import UpdateView
 
 class SignUpView(generic.CreateView):
     form_class = CustomUserCreationForm
@@ -47,70 +49,64 @@ class SignInView(LoginView):
 from .forms import CustomUserForm
 from django.shortcuts import get_object_or_404
 
-class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = CustomUser
+    form_class = CustomUserForm
     template_name = 'core/edit_profile.html'
-    form_class = CustomUserForm  # Assume this is the form for the CustomUser model
     success_url = reverse_lazy('accounts:profile_detail')
+
     def get_object(self, queryset=None):
         return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        if not context.get('form'):
-            context['form'] = self.form_class(instance=user)
+        context['form'] = self.form_class(instance=user)  # Initialize form with current user data
+
         if user.user_type == 'freelancer':
+            if not hasattr(user, 'freelancer_profile'):
+                FreelancerProfile.objects.create(user=user)
             context['profile_form'] = FreelancerProfileForm(instance=user.freelancer_profile)
         elif user.user_type == 'client':
+            if not hasattr(user, 'client_profile'):
+                ClientProfile.objects.create(user=user)
             context['profile_form'] = ClientProfileForm(instance=user.client_profile)
         return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.get_form()
-        user = self.request.user  # Define 'user' by getting it from the request
+        user_form = self.get_form()
+        profile_form = FreelancerProfileForm(request.POST, request.FILES, instance=request.user.freelancer_profile)
 
-        if user.user_type == 'freelancer':
-            profile_form = FreelancerProfileForm(request.POST, request.FILES, instance=user.freelancer_profile)
-        elif user.user_type == 'client':
-            profile_form = ClientProfileForm(request.POST, request.FILES, instance=user.client_profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, "Your profile was successfully updated!")
+            return redirect(self.get_success_url())
         else:
-            profile_form = None  # or handle as appropriate for your application
-
-        if form.is_valid() and profile_form and profile_form.is_valid():
-            return self.form_valid(form, profile_form)
-        else:
-            return self.form_invalid(form, profile_form)
-
-    def form_valid(self, user_form, profile_form):
-        user_form.save()
-        profile_form.save()
-        messages.success(self.request, 'Profile updated successfully')
-        return HttpResponseRedirect(self.get_success_url())
-
-    def form_invalid(self, user_form, profile_form):
-        return self.render_to_response(self.get_context_data(form=user_form, profile_form=profile_form))
+            messages.error(request, "Please correct the error below.")
+            return self.render_to_response(self.get_context_data(form=user_form, profile_form=profile_form))
 
 
-class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
-    model = Profile
+from django.views.generic import DetailView
+
+class ProfileDetailView(LoginRequiredMixin, DetailView):
+    model = CustomUser
     template_name = 'core/profile_detail.html'
+    context_object_name = 'user'
 
     def get_object(self):
-        # Ensures that the Profile exists, or creates one if it doesn't
-        profile, created = Profile.objects.get_or_create(user=self.request.user)
-        return profile
-
-    def get_success_url(self):
-        return reverse_lazy('accounts:edit_profile')
+        # Ensures the user object is returned for the detail view
+        return get_object_or_404(CustomUser, username=self.request.user.username)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(ProfileDetailView, self).get_context_data(**kwargs)
+        user = self.request.user
 
-        # Add client's orders to context if user is a client
-        if self.request.user.user_type == 'client':
-            context['client_orders'] = Order.objects.filter(client=self.request.user).order_by('-created_at')
-
+        # Check if the user is a client and add closed orders to context
+        if user.user_type == 'client':
+            closed_orders = Order.objects.filter(client=user, status='closed')
+            context['closed_orders'] = closed_orders
         return context
 
 
