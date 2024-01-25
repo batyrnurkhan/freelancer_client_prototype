@@ -45,21 +45,7 @@ from .models import ClientProfile
 class ClientProfileForm(forms.ModelForm):
     class Meta:
         model = ClientProfile
-        fields = [
-            'company_name',
-            'company_website',
-            'profile_image',
-            'contact_name',
-            'contact_email',
-            'contact_phone',
-            'company_description',
-            'industry',
-            'preferred_communication',
-            'additional_notes'
-        ]
-
-    def __init__(self, *args, **kwargs):
-        super(ClientProfileForm, self).__init__(*args, **kwargs)
+        fields = ['company_name', 'company_website', 'profile_image', 'contact_name', 'contact_email', 'contact_phone', 'company_description', 'industry', 'preferred_communication', 'additional_notes']
 
 
 from django import forms

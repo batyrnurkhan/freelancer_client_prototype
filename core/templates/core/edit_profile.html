@@ -154,8 +154,7 @@
 <div class="edit-profile-container">
     <h2>Edit Profile</h2>
     <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <!-- Fields for first name and last name -->
+    {% csrf_token %}
         <div class="form-group">
             <label for="id_first_name">First name:</label>
             <input type="text" id="id_first_name" name="first_name" value="{{ user.first_name }}" class="form-control">
@@ -164,21 +163,14 @@
             <label for="id_last_name">Last name:</label>
             <input type="text" id="id_last_name" name="last_name" value="{{ user.last_name }}" class="form-control">
         </div>
-        <!-- Profile specific fields -->
         {% for field in profile_form %}
         <div class="form-group">
             {{ field.label_tag }}
             {% if field.field.widget.input_type == 'file' %}
-                <!-- Custom file upload button -->
-                <label for="{{ field.id_for_label }}" class="custom-file-upload">
-                    Choose file
-                </label>
+                <label for="{{ field.id_for_label }}" class="custom-file-upload">Choose file</label>
                 <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}" style="display: none;">
                 {% if field.value %}
-                    <!-- Display the file name if it exists -->
-                    <span class="file-name">
-                        {{ field.value.name }}
-                    </span>
+                    <span class="file-name">{{ field.value.name }}</span>
                 {% endif %}
             {% else %}
                 {{ field }}
@@ -195,7 +187,6 @@
     </form>
 </div>
 {% endblock %}
-
 {% block javascript %}
     <script>
 document.addEventListener('DOMContentLoaded', function() {

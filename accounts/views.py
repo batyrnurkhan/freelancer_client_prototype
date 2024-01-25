@@ -1,3 +1,4 @@
+from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -47,6 +48,8 @@ class SignInView(LoginView):
     template_name = 'core/signin.html'
 
 from .forms import CustomUserForm
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 from django.shortcuts import get_object_or_404
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -55,37 +58,53 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'core/edit_profile.html'
     success_url = reverse_lazy('accounts:profile_detail')
 
-    def get_object(self, queryset=None):
+    def get_object(self):
         return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context['form'] = self.form_class(instance=user)  # Initialize form with current user data
+        context['user_form'] = self.form_class(instance=user)
 
         if user.user_type == 'freelancer':
-            if not hasattr(user, 'freelancer_profile'):
-                FreelancerProfile.objects.create(user=user)
-            context['profile_form'] = FreelancerProfileForm(instance=user.freelancer_profile)
+            FreelancerProfileFormSet = inlineformset_factory(
+                CustomUser, FreelancerProfile, form=FreelancerProfileForm, extra=0
+            )
+            context['profile_form'] = FreelancerProfileFormSet(instance=user)
         elif user.user_type == 'client':
-            if not hasattr(user, 'client_profile'):
-                ClientProfile.objects.create(user=user)
-            context['profile_form'] = ClientProfileForm(instance=user.client_profile)
+            ClientProfileFormSet = inlineformset_factory(
+                CustomUser, ClientProfile, form=ClientProfileForm, extra=0
+            )
+            context['profile_form'] = ClientProfileFormSet(instance=user)
         return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        user_form = self.get_form()
-        profile_form = FreelancerProfileForm(request.POST, request.FILES, instance=request.user.freelancer_profile)
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, "Your profile was successfully updated!")
-            return redirect(self.get_success_url())
+        form_class = self.get_form_class()
+        user_form = self.get_form(form_class)
+        if self.request.user.user_type == 'freelancer':
+            ProfileFormSet = inlineformset_factory(CustomUser, FreelancerProfile, form=FreelancerProfileForm, extra=0)
         else:
-            messages.error(request, "Please correct the error below.")
-            return self.render_to_response(self.get_context_data(form=user_form, profile_form=profile_form))
+            ProfileFormSet = inlineformset_factory(CustomUser, ClientProfile, form=ClientProfileForm, extra=0)
+
+        profile_formset = ProfileFormSet(self.request.POST, self.request.FILES, instance=self.object)
+
+        if user_form.is_valid() and profile_formset.is_valid():
+            return self.form_valid(user_form, profile_formset)
+        else:
+            return self.form_invalid(user_form, profile_formset)
+
+    def form_valid(self, user_form, profile_formset):
+        user = user_form.save()
+        profile_formset.save()
+        messages.success(self.request, "Your profile has been updated successfully.")
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, user_form, profile_formset):
+        # You may want to add additional handling here
+        return self.render_to_response(self.get_context_data(user_form=user_form, profile_form=profile_formset))
+
+
 
 
 from django.views.generic import DetailView
@@ -277,3 +296,25 @@ class OrderListView(LoginRequiredMixin, ListView):
         # You can add additional filtering here if needed
 
         return queryset
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def update_client_profile(request):
+    try:
+        profile = request.user.client_profile
+    except ClientProfile.DoesNotExist:
+        profile = ClientProfile(user=request.user)
+
+    if request.method == 'POST':
+        form = ClientProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('accounts:profile_detail')
+
+    else:
+        form = ClientProfileForm(instance=profile)
+
+    context = {'form': form}
+    return render(request, 'core/update_client_profile.html', context)

@@ -118,48 +118,48 @@ body {
     background-color: #3C6E71; /* Darker shade for hover state */
 }
 .profile-video {
-    margin-top: 20px;
-    width: 100%; /* Responsive width */
-    border-radius: 10px; /* Rounded corners */
-    overflow: hidden; /* Ensures the video corners are rounded */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Consistent with the profile container shadow */
+    position: relative;
+    overflow: hidden;
+    /* Assuming a 16:9 aspect ratio for the videos */
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
 }
 
 .profile-video video {
-    display: block; /* Remove default inline display */
-    width: 100%; /* Responsive width */
-    height: auto; /* Maintain aspect ratio */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 </style>
 {% endblock page_specific_css %}
 {% block content %}
-<div class="profile-container">
-    <!-- Profile Sidebar for Image and Basic Info -->
-    <div class="profile-sidebar">
-        {% if user.profile.profile_image %}
-            <img class="profile-image" src="{{ user.profile.profile_image.url }}" alt="{{ user.username }}">
-        {% else %}
-            <img class="profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Avatar">
-        {% endif %}
+<div class="profile-container"><div class="profile-sidebar">
+        {% if user.freelancer_profile.profile_image %}
+    <img class="profile-image" src="{{ user.freelancer_profile.profile_image.url }}" alt="{{ user.username }}">
+{% endif %}
+{% if user.user_type == 'client' and user.client_profile.profile_image %}
+    <img class="profile-image" src="{{ user.client_profile.profile_image.url }}" alt="{{ user.username }}">
+{% else %}
+    <img class="profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Avatar">
+{% endif %}
+     <h1 class="profile-title">{{ user.first_name|upper }} {{ user.last_name|upper }}</h1>
 
-        <!-- User Full Name -->
-        <h1 class="profile-title">{{ user.first_name|upper }} {{ user.last_name|upper }}</h1>
-
-        <!-- Different subtitles based on user type -->
         {% if user.user_type == 'freelancer' %}
             <h2 class="profile-subtitle">{{ user.freelancer_profile.skill_desc|upper }}</h2>
         {% elif user.user_type == 'client' %}
             <h2 class="profile-subtitle">{{ user.client_profile.company_name|upper }}</h2>
         {% endif %}
 
-        <!-- Contact Information -->
         <div class="profile-contact-info">
             <p>{{ user.email }}</p>
         </div>
 
-        <!-- Edit Profile Button -->
-        <a href="{% url 'accounts:edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
-    </div>
+{% if user.user_type == 'freelancer' %}
+    <a href="{% url 'accounts:edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
+{% elif user.user_type == 'client' %}
+    <a href="{% url 'accounts:update_client_profile' %}" class="edit-profile-btn">Edit Profile</a>
+{% endif %}    </div>
 
     <!-- Profile Main for Detailed Info -->
     <div class="profile-main">
@@ -175,15 +175,35 @@ body {
             {% else %}
                 <p>No skills to display.</p>
             {% endif %}
-
             <div class="section-title">PORTFOLIO</div>
             {% if user.freelancer_profile.portfolio %}
                 <p><a href="{{ user.freelancer_profile.portfolio }}" target="_blank">{{ user.freelancer_profile.portfolio }}</a></p>
             {% else %}
                 <p>No portfolio to display.</p>
             {% endif %}
-
-        <!-- Client Profile -->
+            <!-- Video Introduction -->
+            {% if user.freelancer_profile.video %}
+    <div class="section-title">VIDEO INTRODUCTION</div>
+    <div class="profile-video">
+        <video controls>
+            <source src="{{ user.freelancer_profile.video.url }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+{% endif %}
+            <div class="section-title">RATINGS & REVIEWS</div>
+            {% if user.freelancer_profile.ratings.exists %}
+                <div>
+                    Average Rating: {{ user.freelancer_profile.average_rating }}
+                    <ul>
+                        {% for rating in user.freelancer_profile.ratings.all %}
+                            <li>Score: {{ rating.score }} - "{{ rating.review }}"</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <p>No ratings to display.</p>
+            {% endif %}
         {% elif user.user_type == 'client' %}
             <div class="section-title">COMPANY INFORMATION</div>
             <p><strong>Website:</strong> <a href="{{ user.client_profile.company_website }}" target="_blank">{{ user.client_profile.company_website }}</a></p>
