@@ -47,65 +47,6 @@ class SignUpView(generic.CreateView):
 class SignInView(LoginView):
     template_name = 'core/signin.html'
 
-from .forms import CustomUserForm
-from django.http import HttpResponseRedirect
-from django.contrib import messages
-from django.shortcuts import get_object_or_404
-
-class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-    model = CustomUser
-    form_class = CustomUserForm
-    template_name = 'core/edit_profile.html'
-    success_url = reverse_lazy('accounts:profile_detail')
-
-    def get_object(self):
-        return self.request.user
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['user_form'] = self.form_class(instance=user)
-
-        if user.user_type == 'freelancer':
-            FreelancerProfileFormSet = inlineformset_factory(
-                CustomUser, FreelancerProfile, form=FreelancerProfileForm, extra=0
-            )
-            context['profile_form'] = FreelancerProfileFormSet(instance=user)
-        elif user.user_type == 'client':
-            ClientProfileFormSet = inlineformset_factory(
-                CustomUser, ClientProfile, form=ClientProfileForm, extra=0
-            )
-            context['profile_form'] = ClientProfileFormSet(instance=user)
-        return context
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form_class = self.get_form_class()
-        user_form = self.get_form(form_class)
-        if self.request.user.user_type == 'freelancer':
-            ProfileFormSet = inlineformset_factory(CustomUser, FreelancerProfile, form=FreelancerProfileForm, extra=0)
-        else:
-            ProfileFormSet = inlineformset_factory(CustomUser, ClientProfile, form=ClientProfileForm, extra=0)
-
-        profile_formset = ProfileFormSet(self.request.POST, self.request.FILES, instance=self.object)
-
-        if user_form.is_valid() and profile_formset.is_valid():
-            return self.form_valid(user_form, profile_formset)
-        else:
-            return self.form_invalid(user_form, profile_formset)
-
-    def form_valid(self, user_form, profile_formset):
-        user = user_form.save()
-        profile_formset.save()
-        messages.success(self.request, "Your profile has been updated successfully.")
-        return HttpResponseRedirect(self.get_success_url())
-
-    def form_invalid(self, user_form, profile_formset):
-        # You may want to add additional handling here
-        return self.render_to_response(self.get_context_data(user_form=user_form, profile_form=profile_formset))
-
-
-
 
 from django.views.generic import DetailView
 
@@ -318,3 +259,45 @@ def update_client_profile(request):
 
     context = {'form': form}
     return render(request, 'core/update_client_profile.html', context)
+
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import View
+from .models import FreelancerProfile, CustomUser
+from .forms import FreelancerProfileForm, CustomUserForm
+from django.contrib import messages
+
+class FreelancerProfileUpdateView(LoginRequiredMixin, View):
+    template_name = 'core/edit_profile.html'
+    user_form_class = CustomUserForm
+    profile_form_class = FreelancerProfileForm
+    success_url = reverse_lazy('accounts:profile_detail')  # Adjust as necessary
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        user_form = self.user_form_class(instance=user)
+        profile, created = FreelancerProfile.objects.get_or_create(user=user)
+        profile_form = self.profile_form_class(instance=profile)
+        return render(request, self.template_name, {
+            'user_form': user_form,
+            'profile_form': profile_form
+        })
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user_form = self.user_form_class(request.POST, instance=user)
+        profile, created = FreelancerProfile.objects.get_or_create(user=user)
+        profile_form = self.profile_form_class(request.POST, request.FILES, instance=profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, "Your profile has been updated successfully.")
+            return redirect(self.success_url)
+        else:
+            messages.error(request, "There was an error updating your profile.")
+            return render(request, self.template_name, {
+                'user_form': user_form,
+                'profile_form': profile_form
+            })

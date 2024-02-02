@@ -141,7 +141,6 @@ body {
 {% if user.user_type == 'client' and user.client_profile.profile_image %}
     <img class="profile-image" src="{{ user.client_profile.profile_image.url }}" alt="{{ user.username }}">
 {% else %}
-    <img class="profile-image" src="{% static 'img/default-profile.png' %}" alt="Default Avatar">
 {% endif %}
      <h1 class="profile-title">{{ user.first_name|upper }} {{ user.last_name|upper }}</h1>
 
