@@ -270,6 +270,8 @@
                     <li><a href="{% url 'listings:orders_list' %}">Orders</a></li>
                     {% if user.user_type == 'client' %}
                         <li><a href="{% url 'accounts:freelancer-list' %}">Freelancers</a></li>
+    <li><a href="{% url 'listings:client_orders'%}">My Orders</a></li>
+
                                             <li><a href="{% url 'listings:taken_orders' %}">Taken</a></li>
 
                     {% endif %}

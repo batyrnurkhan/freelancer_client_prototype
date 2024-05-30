@@ -227,36 +227,48 @@
     </div>
     <div class="orders-container">
         {% for order in orders %}
-            <div class="order-item">
-                <a href="{% url 'listings:order_detail' slug=order.slug %}" class="order-link">
-                    <div class="order-content">
-                        <h3 class="order-title">{{ order.title }}</h3>
-                        <p class="order-description">{{ order.description }}</p>
-                        <div class="order-details">
+    <div class="order-item">
+        {% if order.slug %}
+            <a href="{% url 'listings:order_detail' slug=order.slug %}" class="order-link">
+                <div class="order-content">
+                    <h3 class="order-title">{{ order.title }}</h3>
+                    <p class="order-description">{{ order.description }}</p>
+                    <div class="order-details">
                         <span>Price: {{ order.price }}</span> |
-                            <span>Status: {{ order.get_status_display }}</span>
-                        </div>
+                        <span>Status: {{ order.get_status_display }}</span>
                     </div>
-                </a>
-                <div class="order-user-image-container">
-                    {% if order.client.client_profile.profile_image %}
-                        <img class="order-user-profile-image" src="{{ order.client.client_profile.profile_image.url }}" alt="{{ order.client.username }}">
-                    {% else %}
-                        <img class="order-user-profile-image" src="{% static 'img/default-profile.png' %}" alt="Default User Image">
-                    {% endif %}
                 </div>
-                {% if user.is_authenticated and user.user_type == 'freelancer' %}
-                    {% if order.status == 'open' or order.status == 'in_request' %}
-                        <form method="post" action="{% url 'listings:take_order' order.id %}" class="take-order-form">
-                            {% csrf_token %}
-                            <button type="submit" class="take-order-btn">Take Order</button>
-                        </form>
-                    {% endif %}
-                {% endif %}
+            </a>
+        {% else %}
+            <div class="order-content">
+                <h3 class="order-title">{{ order.title }}</h3>
+                <p class="order-description">{{ order.description }}</p>
+                <div class="order-details">
+                    <span>Price: {{ order.price }}</span> |
+                    <span>Status: {{ order.get_status_display }}</span>
+                </div>
             </div>
-        {% empty %}
-            <p>No orders available.</p>
-        {% endfor %}
+        {% endif %}
+        <div class="order-user-image-container">
+            {% if order.client.client_profile.profile_image %}
+                <img class="order-user-profile-image" src="{{ order.client.client_profile.profile_image.url }}" alt="{{ order.client.username }}">
+            {% else %}
+                <img class="order-user-profile-image" src="{% static 'img/default-profile.png' %}" alt="Default User Image">
+            {% endif %}
+        </div>
+        {% if user.is_authenticated and user.user_type == 'freelancer' %}
+            {% if order.status == 'open' or order.status == 'in_request' %}
+                <form method="post" action="{% url 'listings:take_order' order.id %}" class="take-order-form">
+                    {% csrf_token %}
+                    <button type="submit" class="take-order-btn">Take Order</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+{% empty %}
+    <p>No orders available.</p>
+{% endfor %}
+
     </div>
     {% if user.is_authenticated and user.user_type == 'client' %}
         <div class="create-order-button">

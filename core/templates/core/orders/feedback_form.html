@@ -1,0 +1,65 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="feedback-container">
+    <h2>Submit Feedback</h2>
+    <form method="post" class="feedback-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-submit">Submit Feedback</button>
+    </form>
+</div>
+    <style>
+    /* Additional styles for forms and buttons */
+.feedback-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.feedback-form p {
+    margin: 10px 0;
+}
+
+.feedback-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.feedback-form input, .feedback-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Fixes padding and border issues */
+    margin-bottom: 10px;
+}
+
+.btn-submit {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+
+.btn-submit:hover {
+    background-color: #45a049;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .feedback-container {
+        padding: 10px;
+    }
+}
+
+    </style>
+{% endblock %}

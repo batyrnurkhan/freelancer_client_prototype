@@ -9,7 +9,7 @@ class Order(models.Model):
     client = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders')
     description = models.TextField()
     skills = models.ManyToManyField(Skill, related_name='orders')
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=255, unique=True, blank=True)

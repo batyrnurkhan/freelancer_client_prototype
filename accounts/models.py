@@ -18,9 +18,7 @@ class Rating(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        average = Rating.objects.filter(freelancer=self.freelancer).aggregate(Avg('score'))['score__avg']
-        self.freelancer.ratings = average
-        self.freelancer.save()
+        self.freelancer.update_ratings()
 
 
 class CustomUserManager(BaseUserManager):
@@ -128,12 +126,16 @@ class FreelancerProfile(models.Model):
         blank=True,
         help_text="Upload a video showcasing your work."
     )
+
     def update_ratings(self):
-        self.average_rating = self.ratings.aggregate(Avg('score'))['score__avg']
-        self.save()
+        average_rating = self.ratings.aggregate(Avg('score'))['score__avg']
+        if average_rating is not None:
+            self.average_rating = average_rating
+            self.save()
 
     def __str__(self):
         return f"{self.user.username}'s freelancer profile"
+
 
 
 class ClientProfile(models.Model):

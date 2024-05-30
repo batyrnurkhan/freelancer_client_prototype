@@ -4,8 +4,9 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from .models import Order
-from .forms import OrderForm
-from accounts.models import Skill
+from .forms import OrderForm, FeedbackForm
+from accounts.models import Skill, Rating
+
 
 # List view for all orders, with separation of open and taken orders for freelancers
 class OrderListView(LoginRequiredMixin, ListView):
@@ -67,6 +68,79 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
     template_name = 'core/orders/order_detail.html'
     context_object_name = 'order'
     slug_url_kwarg = 'slug'
+
+from django.views.generic import DetailView
+from django.views.generic.edit import FormMixin
+from .models import Order
+from .forms import OrderUpdateForm
+from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
+from .models import Order
+from .forms import OrderUpdateForm
+from django.urls import reverse
+
+class OrderDetailView2(LoginRequiredMixin, DetailView):
+    model = Order
+    template_name = 'core/orders/order_detail2.html'
+    context_object_name = 'order'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = OrderUpdateForm(instance=self.object)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = OrderUpdateForm(request.POST, instance=self.object)
+        if form.is_valid():
+            updated_order = form.save()
+            messages.success(request, 'Order status updated successfully.')
+            if updated_order.status == 'completed':
+                # Redirect to feedback form
+                return redirect('listings:feedback_form', order_id=updated_order.id)
+            return redirect(self.get_success_url())
+        else:
+            for error in form.errors.values():
+                messages.error(request, error)
+            return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('listings:order_detail2', kwargs={'slug': self.object.slug})
+
+from django.views.generic.edit import FormView
+
+class FeedbackView(LoginRequiredMixin, FormView):
+    template_name = 'core/orders/feedback_form.html'
+    form_class = FeedbackForm
+
+    def form_valid(self, form):
+        order = Order.objects.get(id=self.kwargs['order_id'])
+        if order.freelancer:
+            # Update or create the rating
+            rating, created = Rating.objects.update_or_create(
+                order=order,
+                defaults={
+                    'freelancer': order.freelancer,  # Ensure this is a direct reference to a FreelancerProfile instance
+                    'score': form.cleaned_data['score'],
+                    'review': form.cleaned_data['review']
+                }
+            )
+            order.freelancer.update_ratings()  # Ensure this method doesn't improperly handle related sets
+            return super().form_valid(form)
+        else:
+            # Properly handle cases where no freelancer is assigned
+            messages.error(self.request, "No freelancer assigned to this order.")
+            return self.form_invalid(form)
+
+    def get_success_url(self):
+        # Redirect to some success page or order detail page
+        return reverse('home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['order'] = Order.objects.get(id=self.kwargs['order_id'])
+        return context
 
 
 # View for updating an existing order, restricted to the client who created it or admins
@@ -152,3 +226,11 @@ class TakenOrdersListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Order.objects.filter(client=self.request.user, status='in_progress')
 
+class ClientOrdersListView(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = 'core/orders/client_orders_list.html'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        # Returns orders where the logged-in user is the client
+        return Order.objects.filter(client=self.request.user).order_by('-created_at')

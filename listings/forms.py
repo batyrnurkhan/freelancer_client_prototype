@@ -41,3 +41,22 @@ class JobForm(forms.ModelForm):
         help_text='Format: YYYY-MM-DD'
     )
 
+class OrderUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['status']  # Only include the status field
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if instance.status == 'open':
+            instance.freelancer = None
+        if commit:
+            instance.save()
+        return instance
+
+
+from accounts.models import Rating
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ['score', 'review']

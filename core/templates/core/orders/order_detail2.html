@@ -1,0 +1,37 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Order Details - {{ order.title }}{% endblock title %}
+
+{% block content %}
+<div style="padding: 20px; max-width: 800px; margin: auto;">
+    <h2>Order Details: {{ order.title }}</h2>
+    <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.1);">
+        <p><strong>Description:</strong> {{ order.description }}</p>
+        <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+        <p><strong>Price:</strong> ${{ order.price }}</p>
+        <p><strong>Freelancer:</strong> {{ order.freelancer|default:"None" }}</p>
+    </div>
+
+    <form method="post" style="background: #f7f9fc; padding: 20px; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 15px rgba(0,0,0,0.1);">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="background-color: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Update Order</button>
+    </form>
+</div>
+    <style>
+    form input, form select, form textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    form label {
+        display: block;
+        margin-top: 20px;
+    }
+</style>
+
+{% endblock %}
