@@ -241,5 +241,5 @@ class ClientOrdersListView(LoginRequiredMixin, ListView):
     context_object_name = 'orders'
 
     def get_queryset(self):
-        # Returns orders where the logged-in user is the client
-        return Order.objects.filter(client=self.request.user).order_by('-created_at')
+        # Returns orders where the logged-in user is the client and have a non-empty slug
+        return Order.objects.filter(client=self.request.user).exclude(slug__isnull=True).exclude(slug__exact='').order_by('-created_at')
