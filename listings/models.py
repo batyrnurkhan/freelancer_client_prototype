@@ -12,7 +12,17 @@ class Order(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=255, unique=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
+
+    def generate_unique_slug(self):
+        base_slug = slugify(self.title)
+        slug = base_slug
+        num = 1
+        while Order.objects.filter(slug=slug).exists():
+            slug = f"{base_slug}-{num}"
+            num += 1
+        return slug
+
     STATUS_CHOICES = (
         ('open', 'Open'),
         ('in_request', 'In Request'),

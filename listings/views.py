@@ -15,9 +15,7 @@ class OrderListView(LoginRequiredMixin, ListView):
     context_object_name = 'orders'
 
     def get_queryset(self):
-        # Exclude orders with 'closed' and 'in_progress' status
-        queryset = super().get_queryset().exclude(status__in=['closed', 'in_progress'])
-
+        queryset = super().get_queryset().exclude(slug__isnull=True).exclude(slug__exact='')
         skill_query_list = self.request.GET.getlist('skills')
         min_price = self.request.GET.get('min_price')
         max_price = self.request.GET.get('max_price')
@@ -37,6 +35,7 @@ class OrderListView(LoginRequiredMixin, ListView):
         context['all_skills'] = Skill.objects.all()
         return context
 
+from django.utils.text import slugify
 
 # View for creating a new order, restricted to clients
 class OrderCreateView(CreateView):
@@ -48,9 +47,19 @@ class OrderCreateView(CreateView):
     def form_valid(self, form):
         order = form.save(commit=False)
         order.client = self.request.user  # Adjust as necessary for your user model
+        order.slug = self.generate_unique_slug(order.title)
         order.save()
         form.save_m2m()
         return super().form_valid(form)
+
+    def generate_unique_slug(self, title):
+        base_slug = slugify(title)
+        slug = base_slug
+        num = 1
+        while Order.objects.filter(slug=slug).exists():
+            slug = f"{base_slug}-{num}"
+            num += 1
+        return slug
 
     def form_invalid(self, form):
         print("Form errors:", form.errors)  # Log form errors
