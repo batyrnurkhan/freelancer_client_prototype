@@ -5,7 +5,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from .models import Order
 from .forms import OrderForm, FeedbackForm
-from accounts.models import Skill, Rating
+from accounts.models import Skill, Rating, FreelancerProfile
 
 
 # List view for all orders, with separation of open and taken orders for freelancers
@@ -234,6 +234,15 @@ class TakenOrdersListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Order.objects.filter(client=self.request.user, status='in_progress')
+
+from django.http import JsonResponse
+def search_freelancers(request):
+    query = request.GET.get('query', '')
+    freelancers = FreelancerProfile.objects.filter(user__username__icontains=query)
+    return JsonResponse({
+        'freelancers': [{'username': f.user.username} for f in freelancers]
+    })
+
 
 class ClientOrdersListView(LoginRequiredMixin, ListView):
     model = Order

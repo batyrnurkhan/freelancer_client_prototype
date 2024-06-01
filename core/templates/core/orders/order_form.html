@@ -121,6 +121,13 @@ select[multiple] option {
       padding: .8rem 1.5rem;
     }
   }
+
+  #search-results {
+  max-height: 200px;
+  overflow-y: auto; /* Allow scrolling inside the dropdown if there are many results */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Optional: adds shadow for better visibility */
+  z-index: 1000; /* Ensures the dropdown is on top of other elements */
+}
 </style>
 {% endblock %}
 
@@ -133,9 +140,51 @@ select[multiple] option {
     {{ form.description.label_tag }} {{ form.description }}
     {{ form.skills.label_tag }} {{ form.skills }}
     {{ form.price.label_tag }} {{ form.price }}
-    {{ form.freelancer.label_tag }} {{ form.freelancer }}
+    <div style="position: relative;">
+      {{ form.freelancer.label_tag }} {{ form.freelancer }}
+      <div id="search-results" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ccc; display: none;"></div>
+    </div>
     <button type="submit" class="btn btn-create">Create Order</button>
   </form>
   <a href="{{ success_url }}" class="btn btn-cancel">Cancel</a>
 </div>
+   <script>
+document.addEventListener("DOMContentLoaded", function() {
+  const searchInput = document.querySelector('input[name="freelancer"]');
+  const resultsDiv = document.getElementById('search-results');
+
+  searchInput.addEventListener('input', function() {
+    const searchValue = this.value;
+    if (searchValue.length > 2) {
+      fetch(`/listings/search-freelancers/?query=${searchValue}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.freelancers.length > 0) {
+            resultsDiv.innerHTML = '';
+            resultsDiv.style.display = 'block'; // Show the results div
+            data.freelancers.forEach(f => {
+              const div = document.createElement('div');
+              div.textContent = f.username;
+              div.style.cursor = 'pointer';
+              div.style.padding = '10px';
+              div.onclick = function() {
+                searchInput.value = this.textContent;
+                resultsDiv.style.display = 'none'; // Hide on selection
+              };
+              resultsDiv.appendChild(div);
+            });
+          } else {
+            resultsDiv.style.display = 'none'; // Hide if no results
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          resultsDiv.style.display = 'none';
+        });
+    } else {
+      resultsDiv.style.display = 'none';
+    }
+  });
+});
+</script>
 {% endblock %}

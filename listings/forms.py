@@ -13,17 +13,23 @@ class OrderForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         help_text='Select the skills required for this order.'
     )
-
-    # Add a ModelChoiceField for selecting a freelancer
-    freelancer = forms.ModelChoiceField(
-        queryset=FreelancerProfile.objects.all(),
+    freelancer = forms.CharField(
         required=False,
-        help_text='Select a freelancer for this order.'
+        help_text='Start typing to search for freelancers.',
+        widget=forms.TextInput(attrs={'autocomplete': 'off'})
     )
 
     class Meta:
         model = Order
-        fields = ['title', 'description', 'skills', 'price', 'freelancer']  # Include the 'freelancer' field
+        fields = ['title', 'description', 'skills', 'price', 'freelancer']
+
+    def clean_freelancer(self):
+        username = self.cleaned_data['freelancer']
+        try:
+            freelancer = FreelancerProfile.objects.get(user__username=username)
+            return freelancer
+        except FreelancerProfile.DoesNotExist:
+            raise forms.ValidationError("Freelancer not found")
 
 
 class SkillSearchForm(forms.Form):
