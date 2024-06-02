@@ -301,3 +301,25 @@ class FreelancerProfileUpdateView(LoginRequiredMixin, View):
                 'user_form': user_form,
                 'profile_form': profile_form
             })
+
+import requests
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.conf import settings
+from .models import CustomUser
+@receiver(post_save, sender=CustomUser)
+def create_user_in_drf_project(sender, instance, created, **kwargs):
+    if created:
+        data = {
+            "username": instance.username,
+            "email": instance.email,
+            "password": instance.password  # Make sure to handle password transmission securely
+        }
+        try:
+            response = requests.post(settings.DRF_PROJECT_API_URL, json=data)
+            if response.status_code != 201:
+                # Log this error; API call failed
+                print("Failed to create user in DRF project")
+        except requests.exceptions.RequestException as e:
+            # Handle possible exceptions
+            print("API call failed:", e)

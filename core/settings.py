@@ -138,3 +138,5 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:9000",
     "http://10.0.2.2:8000",
 ]
+
+DRF_PROJECT_API_URL = 'https://yerserik.pythonanywhere.com/api/path/to/registration/'
