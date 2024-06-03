@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from .views import TakenOrdersListView, ClientOrdersListView, OrderDetailView, OrderDetailView2, FeedbackView, \
-    search_freelancers
+    search_freelancers, OrderCreateAPIView
 
 app_name = 'listings'
 
@@ -14,6 +14,7 @@ urlpatterns = [
     path('orders2/<slug:slug>/', OrderDetailView2.as_view(), name='order_detail2'),
     path('feedback/<int:order_id>/', FeedbackView.as_view(), name='feedback_form'),
     path('search-freelancers/', search_freelancers, name='search-freelancers'),
+    path('api/orders/create/', OrderCreateAPIView.as_view(), name='create-order'),
 
     # Actions for orders
     path('orders/<int:order_id>/take/', views.TakeOrderView.as_view(), name='take_order'),

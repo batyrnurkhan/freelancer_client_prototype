@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import SignUpView, SignInView, FreelancerProfileUpdateView, ProfileDetailView, FreelancerListView, LogoutView, \
+from .views import SignUpView, SignInView, FreelancerProfileUpdateView, ProfileDetailView, FreelancerListView, \
+    LogoutView, \
     FreelancerDetailView, ClientListView, ClientDetailView, activate_account, skill_search, OrderListView, \
-    update_client_profile
+    update_client_profile, UserRegistrationAPIView
 from django.contrib.auth import views as auth_views
 from django.urls import path
 from .views import search_freelancers
@@ -23,4 +24,5 @@ urlpatterns = [
     path('skill/', skill_search, name='skill_search'),
     path('orders/', OrderListView.as_view(), name='name_of_order_list_view'),
     path('profile/update/', update_client_profile, name='update_client_profile'),
+    path('api/register/', UserRegistrationAPIView.as_view(), name='user-registration'),
 ]

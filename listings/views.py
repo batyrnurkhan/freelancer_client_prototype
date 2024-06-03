@@ -252,3 +252,49 @@ class ClientOrdersListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         # Returns orders where the logged-in user is the client and have a non-empty slug
         return Order.objects.filter(client=self.request.user).exclude(slug__isnull=True).exclude(slug__exact='').order_by('-created_at')
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import OrderSerializer
+
+class OrderCreateAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            order = serializer.save()
+            return Response({
+                'id': order.id,
+                'title': order.title
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from .models import Order
+import requests
+import json
+from django.conf import settings
+
+@receiver(post_save, sender=Order)
+def send_order_to_drf_project(sender, instance, created, **kwargs):
+    if created:
+        data = {
+            'title': instance.title,
+            'description': instance.description,
+            'price': str(instance.price),  # Convert Decimal to string
+            'status': instance.status,
+            'user': instance.client.id,
+            'skills': [skill.id for skill in instance.skills.all()]  # Convert many-to-many field data
+        }
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(
+            'https://yerserik.pythonanywhere.com/api/listings/create/orders/',
+            data=json.dumps(data),
+            headers=headers
+        )
+        if response.status_code == 201:
+            print("Order synced successfully with DRF project.")
+        else:
+            print("Failed to sync order with the DRF project:", response.status_code, response.text)

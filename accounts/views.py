@@ -307,19 +307,39 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
 from .models import CustomUser
+
+
 @receiver(post_save, sender=CustomUser)
 def create_user_in_drf_project(sender, instance, created, **kwargs):
     if created:
         data = {
             "username": instance.username,
             "email": instance.email,
-            "password": instance.password  # Make sure to handle password transmission securely
+            "password": instance.password,  # Handle this securely
+            "role": instance.user_type,  # Ensure user_type from Django maps to role in DRF
+            "first_name": instance.first_name,
+            "last_name": instance.last_name
         }
         try:
             response = requests.post(settings.DRF_PROJECT_API_URL, json=data)
             if response.status_code != 201:
-                # Log this error; API call failed
-                print("Failed to create user in DRF project")
+                print("Failed to create user in DRF project. Status Code:", response.status_code)
+                print("Response:", response.json())  # This will print the response body from the DRF project
         except requests.exceptions.RequestException as e:
-            # Handle possible exceptions
             print("API call failed:", e)
+
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import UserRegistrationSerializer
+class UserRegistrationAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({
+                'id': user.id,
+                'username': user.username,
+                'email': user.email
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
